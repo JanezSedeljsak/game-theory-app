@@ -2,7 +2,10 @@ module tictactoe-minmax
 
 go 1.17
 
-require fyne.io/fyne/v2 v2.1.2
+require (
+	fyne.io/fyne/v2 v2.1.2
+	github.com/zserge/lorca v0.1.10
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1
