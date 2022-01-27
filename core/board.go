@@ -7,7 +7,7 @@ import (
 func CheckWinner(board [][]int) int {
 	for i := 0; i < Size; i++ {
 		if board[i][0] != 0 && board[i][0] == board[i][1] && board[i][1] == board[i][2] {
-			return board[1][i]
+			return board[i][1]
 		}
 
 		if board[0][i] != 0 && board[0][i] == board[1][i] && board[1][i] == board[2][i] {
@@ -51,9 +51,9 @@ func StringifyBoard(board [][]int) string {
 			case 0:
 				sb.WriteString("_")
 			case 1:
-				sb.WriteString("X")
-			case -1:
 				sb.WriteString("O")
+			case -1:
+				sb.WriteString("X")
 			}
 		}
 

@@ -19,12 +19,9 @@ func main() {
 		if winner != 0 {
 			fmt.Printf("winner is: %d\n", winner)
 			break
-		} else {
-			var isDone bool = core.IsStalemate(board)
-			if isDone {
-				fmt.Println("Stalemate")
-				break
-			}
+		} else if core.IsStalemate(board) {
+			fmt.Println("Stalemate")
+			break
 		}
 
 		var x, y int
@@ -42,9 +39,9 @@ func main() {
 			}
 		} else {
 			boardCpy := board // copy by value
-			ai := core.MinMax(boardCpy, 0, false, core.MinInt, core.MaxInt)
-			//fmt.Println(ai)
-			board[ai.Coords.X][ai.Coords.Y] = -1
+			aiMove := core.MinMax(boardCpy, 0, false, core.MinInt, core.MaxInt)
+			fmt.Println(aiMove)
+			board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
 		}
 
 		fmt.Println(core.StringifyBoard(board))

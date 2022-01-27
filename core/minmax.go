@@ -9,18 +9,9 @@ const Size = 3
 func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response {
 	var winner int = CheckWinner(board)
 	if winner != 0 {
-		var leafValue int = winner * 10
-		if winner == 1 {
-			leafValue += 10 - depth
-		} else {
-			leafValue -= depth
-		}
-		return Response{Coord{}, leafValue}
-	} else {
-		var isDone bool = IsStalemate(board)
-		if isDone {
-			return Response{Coord{}, depth}
-		}
+		return Response{Coord{}, winner}
+	} else if IsStalemate(board) {
+		return Response{Coord{}, 0}
 	}
 
 	var moveOptions []Coord
@@ -37,11 +28,9 @@ func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response 
 
 	if isMax {
 		for _, option := range moveOptions {
-
-			// update and reset board after minmax call
-			board[option.X][option.Y] = 1
+			board[option.Row][option.Col] = 1
 			current := MinMax(board, depth+1, false, alpha, beta)
-			board[option.X][option.Y] = 0
+			board[option.Row][option.Col] = 0
 
 			if current.Value > bestVal {
 				bestVal = current.Value
@@ -62,11 +51,9 @@ func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response 
 
 	bestVal = MaxInt
 	for _, option := range moveOptions {
-
-		// update and reset board after minmax call
-		board[option.X][option.Y] = -1
+		board[option.Row][option.Col] = -1
 		current := MinMax(board, depth+1, true, alpha, beta)
-		board[option.X][option.Y] = 0
+		board[option.Row][option.Col] = 0
 
 		if current.Value < bestVal {
 			bestVal = current.Value

@@ -1,8 +1,8 @@
 package core
 
 type Coord struct {
-	X int
-	Y int
+	Row int
+	Col int
 }
 
 type Response struct {
