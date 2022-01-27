@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-func CheckWinner(board [][]int) int {
+func CheckWinner(board [][]int8) int8 {
 	for i := 0; i < Size; i++ {
 		if board[i][0] != 0 && board[i][0] == board[i][1] && board[i][1] == board[i][2] {
 			return board[i][1]
@@ -28,7 +28,7 @@ func CheckWinner(board [][]int) int {
 	return 0
 }
 
-func IsStalemate(board [][]int) bool {
+func IsStalemate(board [][]int8) bool {
 	for i := 0; i < Size; i++ {
 		for j := 0; j < Size; j++ {
 			if board[i][j] == 0 {
@@ -40,7 +40,7 @@ func IsStalemate(board [][]int) bool {
 	return true
 }
 
-func StringifyBoard(board [][]int) string {
+func StringifyBoard(board [][]int8) string {
 	var sb strings.Builder
 	for i := 0; i < Size; i++ {
 		if i != 0 {
@@ -60,4 +60,16 @@ func StringifyBoard(board [][]int) string {
 	}
 
 	return sb.String()
+}
+
+func BoardHash(board [][]int8) int {
+	var hash int = 0
+	for i := 0; i < Size; i++ {
+		for j := 0; j < Size; j++ {
+			var val int = int(board[i][j]) + 1
+			hash = 31*hash + val
+		}
+	}
+
+	return hash
 }

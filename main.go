@@ -7,7 +7,7 @@ import (
 
 func main() {
 	myTurn := true
-	board := [][]int{
+	board := [][]int8{
 		{0, 0, 0},
 		{0, 0, 0},
 		{0, 0, 0},
@@ -15,7 +15,7 @@ func main() {
 
 	for {
 		myTurn = !myTurn
-		var winner int = core.CheckWinner(board)
+		var winner int8 = core.CheckWinner(board)
 		if winner != 0 {
 			fmt.Printf("winner is: %d\n", winner)
 			break
@@ -38,9 +38,7 @@ func main() {
 				fmt.Println("Invalid args!!!")
 			}
 		} else {
-			boardCpy := board // copy by value
-			aiMove := core.MinMax(boardCpy, 0, false, core.MinInt, core.MaxInt)
-			fmt.Println(aiMove)
+			aiMove := core.CalcMove(board)
 			board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
 		}
 

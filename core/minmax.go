@@ -6,10 +6,24 @@ const MaxInt = int(MaxUint >> 1)
 const MinInt = int(-MaxInt - 1)
 const Size = 3
 
-func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response {
-	var winner int = CheckWinner(board)
+func CalcMove(board [][]int8) Response {
+	dp := newdp()
+	return dp.minMax(board, 0, false, MinInt, MaxInt)
+}
+
+func newdp() *dp {
+	return &dp{Memo: make(map[int]Response)}
+}
+
+func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) Response {
+	var hash int = BoardHash(board)
+	if _, ok := d.Memo[hash]; ok {
+		return d.Memo[hash]
+	}
+
+	var winner int8 = CheckWinner(board)
 	if winner != 0 {
-		return Response{Coord{}, winner}
+		return Response{Coord{}, int(winner)}
 	} else if IsStalemate(board) {
 		return Response{Coord{}, 0}
 	}
@@ -29,7 +43,7 @@ func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response 
 	if isMax {
 		for _, option := range moveOptions {
 			board[option.Row][option.Col] = 1
-			current := MinMax(board, depth+1, false, alpha, beta)
+			current := d.minMax(board, depth+1, false, alpha, beta)
 			board[option.Row][option.Col] = 0
 
 			if current.Value > bestVal {
@@ -46,13 +60,15 @@ func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response 
 			}
 		}
 
-		return Response{bestMove, bestVal}
+		res := Response{bestMove, bestVal}
+		d.Memo[hash] = res
+		return res
 	}
 
 	bestVal = MaxInt
 	for _, option := range moveOptions {
 		board[option.Row][option.Col] = -1
-		current := MinMax(board, depth+1, true, alpha, beta)
+		current := d.minMax(board, depth+1, true, alpha, beta)
 		board[option.Row][option.Col] = 0
 
 		if current.Value < bestVal {
@@ -69,5 +85,7 @@ func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response 
 		}
 	}
 
-	return Response{bestMove, bestVal}
+	res := Response{bestMove, bestVal}
+	d.Memo[hash] = res
+	return res
 }
