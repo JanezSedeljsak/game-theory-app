@@ -28,9 +28,24 @@ func CheckWinner(board [][]int) int {
 	return 0
 }
 
+func IsStalemate(board [][]int) bool {
+	for i := 0; i < Size; i++ {
+		for j := 0; j < Size; j++ {
+			if board[i][j] == 0 {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
 func StringifyBoard(board [][]int) string {
 	var sb strings.Builder
 	for i := 0; i < Size; i++ {
+		if i != 0 {
+			sb.WriteString("\n")
+		}
 		for j := 0; j < Size; j++ {
 			switch board[i][j] {
 			case 0:
@@ -41,7 +56,7 @@ func StringifyBoard(board [][]int) string {
 				sb.WriteString("O")
 			}
 		}
-		sb.WriteString("\n")
+
 	}
 
 	return sb.String()

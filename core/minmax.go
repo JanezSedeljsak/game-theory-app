@@ -9,7 +9,18 @@ const Size = 3
 func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response {
 	var winner int = CheckWinner(board)
 	if winner != 0 {
-		return Response{Coord{}, winner}
+		var leafValue int = winner * 10
+		if winner == 1 {
+			leafValue += 10 - depth
+		} else {
+			leafValue -= depth
+		}
+		return Response{Coord{}, leafValue}
+	} else {
+		var isDone bool = IsStalemate(board)
+		if isDone {
+			return Response{Coord{}, depth}
+		}
 	}
 
 	var moveOptions []Coord

@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	myTurn := false
+	myTurn := true
 	board := [][]int{
 		{0, 0, 0},
 		{0, 0, 0},
@@ -19,17 +19,31 @@ func main() {
 		if winner != 0 {
 			fmt.Printf("winner is: %d\n", winner)
 			break
+		} else {
+			var isDone bool = core.IsStalemate(board)
+			if isDone {
+				fmt.Println("Stalemate")
+				break
+			}
 		}
 
 		var x, y int
 		if myTurn {
-			fmt.Println("Enter next coords")
-			fmt.Scanf("%d", &x)
-			fmt.Scanf("%d", &y)
-			board[x][y] = 1
+			for {
+				fmt.Println("Enter next coords")
+				fmt.Scanf("\n%d %d", &x, &y)
+				fmt.Printf("You have entered : %d %d\n", x, y)
+				if board[x][y] == 0 {
+					board[x][y] = 1
+					break
+				}
+
+				fmt.Println("Invalid args!!!")
+			}
 		} else {
-			ai := core.MinMax(board, 0, false, core.MinInt, core.MaxInt)
-			fmt.Println(ai)
+			boardCpy := board // copy by value
+			ai := core.MinMax(boardCpy, 0, false, core.MinInt, core.MaxInt)
+			//fmt.Println(ai)
 			board[ai.Coords.X][ai.Coords.Y] = -1
 		}
 
