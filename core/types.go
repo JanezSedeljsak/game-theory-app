@@ -1,11 +1,11 @@
 package core
 
 type Coord struct {
-	x int
-	y int
+	X int
+	Y int
 }
 
 type Response struct {
-	coords Coord
-	value  int
+	Coords Coord
+	Value  int
 }

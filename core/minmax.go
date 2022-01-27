@@ -7,7 +7,7 @@ const MinInt = int(-MaxInt - 1)
 const Size = 3
 
 func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response {
-	var winner int = checkWinner(board)
+	var winner int = CheckWinner(board)
 	if winner != 0 {
 		return Response{Coord{}, winner}
 	}
@@ -22,52 +22,54 @@ func MinMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response 
 	}
 
 	var bestVal int = MinInt
+	var bestMove Coord
+
 	if isMax {
 		for _, option := range moveOptions {
 
 			// update and reset board after minmax call
-			board[option.x][option.y] = 1
+			board[option.X][option.Y] = 1
 			current := MinMax(board, depth+1, false, alpha, beta)
-			board[option.x][option.y] = 0
+			board[option.X][option.Y] = 0
 
-			bestVal = max(bestVal, current.value)
-			alpha = max(alpha, bestVal)
+			if current.Value > bestVal {
+				bestVal = current.Value
+				bestMove = option
+			}
+
+			if bestVal > alpha {
+				alpha = bestVal
+			}
+
 			if beta <= alpha {
 				break
 			}
 		}
 
-		return Response{Coord{}, bestVal}
+		return Response{bestMove, bestVal}
 	}
 
 	bestVal = MaxInt
 	for _, option := range moveOptions {
 
 		// update and reset board after minmax call
-		board[option.x][option.y] = -1
+		board[option.X][option.Y] = -1
 		current := MinMax(board, depth+1, true, alpha, beta)
-		board[option.x][option.y] = 0
+		board[option.X][option.Y] = 0
 
-		bestVal = min(bestVal, current.value)
-		beta = min(beta, bestVal)
+		if current.Value < bestVal {
+			bestVal = current.Value
+			bestMove = option
+		}
+
+		if bestVal < beta {
+			beta = bestVal
+		}
+
 		if beta <= alpha {
 			break
 		}
 	}
 
-	return Response{Coord{}, bestVal}
-}
-
-func min(first int, second int) int {
-	if first < second {
-		return first
-	}
-	return second
-}
-
-func max(first int, second int) int {
-	if first > second {
-		return first
-	}
-	return second
+	return Response{bestMove, bestVal}
 }
