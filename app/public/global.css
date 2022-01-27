@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Roboto:wght@300;400&display=swap");
+
+* {
+  color: #333;
+  font-family: "Roboto", sans-serif;
+}
+
+body,
+.grid-wrapper,
+.grid-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.grid-wrapper {
+  background-color: gray;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-gap: 1px;
+}
+
+.grid-item {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-item > div {
+  font-family: "Gochi Hand", cursive;
+  font-size: 10em;
+}
