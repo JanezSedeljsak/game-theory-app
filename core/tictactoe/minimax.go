@@ -1,4 +1,6 @@
-package core
+package tictactoe
+
+import "math/rand"
 
 const MaxInt = 100
 const MinInt = -100
@@ -62,6 +64,11 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 				bestMove = option
 			}
 
+			// Pick one of many best moves at random
+			if current.Value == bestVal && rand.Float64() < 0.5 {
+				bestMove = option
+			}
+
 			if bestVal > alpha {
 				alpha = bestVal
 			}
@@ -84,6 +91,11 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 
 		if current.Value < bestVal {
 			bestVal = current.Value
+			bestMove = option
+		}
+
+		// Pick one of many best moves at random
+		if current.Value == bestVal && rand.Float64() < 0.5 {
 			bestMove = option
 		}
 

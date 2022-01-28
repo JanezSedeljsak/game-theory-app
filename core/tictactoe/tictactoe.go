@@ -1,4 +1,4 @@
-package core
+package tictactoe
 
 import (
 	"encoding/json"
@@ -76,49 +76,53 @@ func BoardHash(board [][]int8) int {
 	return hash
 }
 
-func (ttt *tictactoe) Init(aiStart bool) [][]int8 {
-	ttt.Lock()
-	defer ttt.Unlock()
-	ttt.board = [][]int8{
+func (s *State) Init(aiStart bool) [][]int8 {
+	s.Lock()
+	defer s.Unlock()
+	s.board = [][]int8{
 		{0, 0, 0},
 		{0, 0, 0},
 		{0, 0, 0},
 	}
 
 	if aiStart {
-		aiMove := CalcMove(ttt.board)
-		ttt.board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
+		aiMove := CalcMove(s.board)
+		s.board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
 	}
 
-	return ttt.board
+	return s.board
 }
 
-func (ttt *tictactoe) Mutate(board [][]int8) string {
-	ttt.board = board
-	var isDraw bool = IsStalemate(board)
-	var winner int = int(CheckWinner(ttt.board))
-	var isDone bool = isDraw || winner != 0
-
-	if isDone {
-		gs := GameStatus{ttt.board, winner, isDone}
+func (s *State) Mutate(board [][]int8) string {
+	gs := getGameStatus(s.board)
+	if gs.IsDone {
 		return gs.Stringify()
 	}
 
-	aiMove := CalcMove(ttt.board)
-	ttt.board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
-	winner = int(CheckWinner(ttt.board))
-	gs := GameStatus{ttt.board, winner, IsStalemate(board) || winner != 0}
+	s.board = board
+	gs = getGameStatus(s.board)
+	if gs.IsDone {
+		return gs.Stringify()
+	}
+
+	aiMove := CalcMove(s.board)
+	s.board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
+	gs = getGameStatus(s.board)
 	return gs.Stringify()
 }
 
-func (ttt *tictactoe) Status(board [][]int8) string {
-	ttt.board = board
-	var isDraw bool = IsStalemate(ttt.board)
-	var winner int = int(CheckWinner(ttt.board))
+func (s *State) Status(board [][]int8) string {
+	s.board = board
+	gs := getGameStatus(s.board)
+	return gs.Stringify()
+}
+
+func getGameStatus(board [][]int8) GameStatus {
+	var isDraw bool = IsStalemate(board)
+	var winner int = int(CheckWinner(board))
 	var isDone bool = isDraw || winner != 0
 
-	gs := GameStatus{ttt.board, winner, isDone}
-	return gs.Stringify()
+	return GameStatus{board, winner, isDone}
 }
 
 func (gs *GameStatus) Stringify() string {

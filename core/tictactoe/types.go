@@ -1,4 +1,4 @@
-package core
+package tictactoe
 
 import "sync"
 
@@ -16,7 +16,7 @@ type dp struct {
 	Memo map[int]Response
 }
 
-type tictactoe struct {
+type State struct {
 	sync.Mutex
 	board [][]int8
 }

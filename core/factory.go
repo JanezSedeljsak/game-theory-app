@@ -10,6 +10,8 @@ import (
 	"os/signal"
 	"runtime"
 
+	"game-theory-challenge/core/tictactoe"
+
 	"github.com/zserge/lorca"
 )
 
@@ -28,7 +30,7 @@ func RunApp(fs embed.FS) {
 		log.Println("UI is ready")
 	})
 
-	ttt := &tictactoe{}
+	ttt := &tictactoe.State{}
 	ui.Bind("mutate", ttt.Mutate)
 	ui.Bind("init", ttt.Init)
 	ui.Bind("status", ttt.Status)

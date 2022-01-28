@@ -4,18 +4,10 @@
   import { toasts } from "svelte-toasts";
   export let visible;
 
-  //window.init = () => {};
-  //window.mutate = () => {};
-
   var board = null;
   var aiStart = true;
   onMount(async () => {
     board = await window.init(aiStart);
-    board = [
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
-    ];
   });
 
   async function move(row, col) {
