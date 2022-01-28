@@ -1,0 +1,25 @@
+<script>
+  import { Modal, Button, Card } from "svelte-chota";
+  import { GetGMEnum } from "../util";
+  export let visible;
+  export let gameMode;
+
+  const GMEnum = GetGMEnum();
+  function pickAndClose(option) {
+    gameMode = option;
+    visible = false;
+  }
+</script>
+
+<Modal bind:open={visible}>
+  <Card>
+    <h4 slot="header">Pick gamemode</h4>
+    <p>You can either play against a friend or some version of the game AI?</p>
+
+    <div slot="footer" class="flex-container">
+      <Button primary on:click={() => pickAndClose(GMEnum.Multiplayer)}>Multiplayer</Button>
+      <Button primary on:click={() => pickAndClose(GMEnum.EasyAI)}>EasyAI</Button>
+      <Button primary on:click={() => pickAndClose(GMEnum.AdvancedAI)}>AdvancedAI</Button>
+    </div>
+  </Card>
+</Modal>

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Roboto:wght@300;400&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Roboto:wght@300;400&display=swap');
 
 * {
   color: #ddd;
@@ -18,9 +18,22 @@
   padding: 0;
 }
 
+.text-primary {
+  color: var(--color-primary);
+}
+
+.cursive-text {
+  font-family: 'Architects Daughter', cursive;
+}
+
 body {
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
+}
+
+.modal .card {
+  background-color: #444;
+  border-radius: 0px;
 }

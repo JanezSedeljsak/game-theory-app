@@ -13,3 +13,14 @@ export function getSymbol(symbol) {
   }
 }
 
+const GameModeEnum = {
+  Multiplayer: 1,
+  EasyAI: 2,
+  AdvancedAI: 3
+}
+
+export function GetGMEnum() {
+  Object.freeze(GameModeEnum);
+  return GameModeEnum;
+}
+

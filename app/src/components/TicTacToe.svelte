@@ -2,10 +2,13 @@
   import { onMount } from "svelte";
   import { sleep, getSymbol } from "../util";
   import { toasts } from "svelte-toasts";
+
   export let visible;
+  export let showModal;
+  export let gameMode;
 
   var board = null;
-  var aiStart = true;
+  var aiStart = false;
   onMount(async () => {
     board = await window.init(aiStart);
   });
@@ -52,8 +55,8 @@
 
 <style>
   .grid-wrapper {
-    height: 100%;
-    width: 100%;
+    height: 90%;
+    width: 90%;
     background-color: #ddd;
   }
 
@@ -71,7 +74,7 @@
   }
 
   .grid-item > div {
-    font-family: "Gochi Hand", cursive;
+    font-family: 'Architects Daughter', cursive;
     font-size: 6em;
   }
 </style>
