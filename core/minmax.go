@@ -17,9 +17,10 @@ func newdp() *dp {
 
 func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) Response {
 	var hash int = BoardHash(board)
-	if _, ok := d.Memo[hash]; ok {
+	// Turned off memoization... (bug)
+	/*if _, ok := d.Memo[hash]; ok {
 		return d.Memo[hash]
-	}
+	}*/
 
 	var winner int8 = CheckWinner(board)
 	if winner != 0 {

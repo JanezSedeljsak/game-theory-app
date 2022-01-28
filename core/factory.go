@@ -28,6 +28,10 @@ func BuildUserInterface(fs embed.FS) {
 		log.Println("UI is ready")
 	})
 
+	ttt := &tictactoe{}
+	ui.Bind("mutate", ttt.Mutate)
+	ui.Bind("init", ttt.Init)
+
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)

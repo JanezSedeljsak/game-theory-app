@@ -1,6 +1,7 @@
 package core
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 )
@@ -73,6 +74,46 @@ func BoardHash(board [][]int8) int {
 	}
 
 	return hash
+}
+
+func (ttt *tictactoe) Init() [][]int8 {
+	ttt.Lock()
+	defer ttt.Unlock()
+	ttt.board = [][]int8{
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0},
+	}
+
+	return ttt.board
+}
+
+func (ttt *tictactoe) Mutate(board [][]int8) string {
+	ttt.board = board
+	var isDraw bool = IsStalemate(board)
+	var winner int = int(CheckWinner(ttt.board))
+	var isDone bool = isDraw || winner != 0
+
+	if isDone {
+		gs := GameStatus{ttt.board, winner, isDone}
+		return gs.Stringify()
+	}
+
+	aiMove := CalcMove(ttt.board)
+	ttt.board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
+	winner = int(CheckWinner(ttt.board))
+	gs := GameStatus{ttt.board, winner, IsStalemate(board) || winner != 0}
+	return gs.Stringify()
+}
+
+func (gs *GameStatus) Stringify() string {
+	str, err := json.Marshal(gs)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	return string(str)
 }
 
 func RunConsoleGame() {
