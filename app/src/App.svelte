@@ -1,48 +1,38 @@
 <script>
-  import { onMount } from 'svelte';
-  import { sleep, transSymbol } from './util';
-  import { toasts, ToastContainer, FlatToast }  from "svelte-toasts";
+  import { ToastContainer, FlatToast } from "svelte-toasts";
+  import TicTacToe from "./components/TicTacToe.svelte";
+  import Connect4 from "./components/Connect4.svelte";
+  import Landing from "./components/Landing.svelte";
+  import "chota";
 
-  var board = null;
-  var aiStart = true;
-  onMount(async () => {
-    board = await window.init(aiStart);
-	});
-
-  async function move(row, col) {
-    if (board[row][col] != 0) return;
-    board[row][col] = 1;
-    const response = await window.mutate(board);
-    const jsonResp = JSON.parse(response);
-    board = jsonResp.board;
-    await sleep();
-
-    if (!jsonResp.isdone) return;
-    const description = !jsonResp.winner ? 'Stalemate' : (`${jsonResp.winner == 1 ? 'O' : 'X'} won!!!`);
-    toasts.add({
-      title: 'Game finished',
-      description: description,
-      type: 'info',
-      onRemove: async () => {
-        board = await window.init(aiStart)
-      }
-    });
-  }
+  let visible = "landing";
 </script>
 
-<div class="grid-wrapper">
-  {#if board}
-  <div class="grid-container">
-    {#each board as row, i}
-      {#each row as column, j}
-        <div class="grid-item" on:click={() => move(i, j)}>
-          <div>{transSymbol(column)}</div>
-        </div>
-      {/each}
-    {/each}
+<div class="wrapper flex-container">
+  <div class="container flex-container">
+    {#if visible == "tictactoe"}
+      <TicTacToe bind:visible={visible} />
+    {:else if visible == "connect4"}
+      <Connect4 bind:visible={visible} />
+    {:else}
+      <Landing bind:visible={visible} />
+    {/if}
   </div>
-  {/if}
-  <ToastContainer let:data={data}>
-		<FlatToast {data}  />
-	</ToastContainer>
+  <ToastContainer let:data>
+    <FlatToast {data} />
+  </ToastContainer>
 </div>
+
+<style>
+  .wrapper {
+    width: 100vw;
+    height: 100vh;
+    background-color: #444;
+  }
+
+  .container {
+    width: 90%;
+    height: 90%;
+    padding: 20px;
+  }
+</style>

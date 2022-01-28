@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"tictactoe-minmax/core"
+	"game-theory-challenge/core"
 )
 
 //go:embed app/public

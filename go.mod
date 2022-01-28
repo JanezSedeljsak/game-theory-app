@@ -1,4 +1,4 @@
-module tictactoe-minmax
+module game-theory-challenge
 
 go 1.17
 

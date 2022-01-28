@@ -19,7 +19,7 @@ func RunApp(fs embed.FS) {
 		args = append(args, "--class=Lorca")
 	}
 
-	ui, err := lorca.New("", "", 800, 800, args...)
+	ui, err := lorca.New("", "", 1024, 720, args...)
 	if err != nil {
 		log.Fatal(err)
 	}

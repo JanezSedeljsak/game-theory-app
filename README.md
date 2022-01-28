@@ -1,1 +1,1 @@
-# tictactoe-minmax
+# game-theory-challenge
