@@ -76,7 +76,7 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 				alpha = bestVal
 			}
 
-			if beta <= alpha {
+			if beta < alpha {
 				break
 			}
 		}
@@ -108,7 +108,7 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 			beta = bestVal
 		}
 
-		if beta <= alpha {
+		if beta < alpha {
 			break
 		}
 	}
