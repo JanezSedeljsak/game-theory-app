@@ -111,7 +111,8 @@ func (ttt *tictactoe) Mutate(board [][]int8) string {
 	return gs.Stringify()
 }
 
-func (ttt *tictactoe) Status() string {
+func (ttt *tictactoe) Status(board [][]int8) string {
+	ttt.board = board
 	var isDraw bool = IsStalemate(ttt.board)
 	var winner int = int(CheckWinner(ttt.board))
 	var isDone bool = isDraw || winner != 0
