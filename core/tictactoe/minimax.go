@@ -51,6 +51,7 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 	}
 
 	var bestVal int = MinInt
+	var swapThreshold float64 = 0.5
 	var bestMove Coord
 
 	if isMax {
@@ -60,12 +61,14 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 			board[option.Row][option.Col] = 0
 
 			if current.Value > bestVal {
+				swapThreshold = 0.5
 				bestVal = current.Value
 				bestMove = option
 			}
 
 			// Pick one of many best moves at random
-			if current.Value == bestVal && rand.Float64() < 0.5 {
+			if current.Value == bestVal && rand.Float64() > swapThreshold {
+				swapThreshold += (1 - swapThreshold) / 2
 				bestMove = option
 			}
 
@@ -90,12 +93,14 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 		board[option.Row][option.Col] = 0
 
 		if current.Value < bestVal {
+			swapThreshold = 0.5
 			bestVal = current.Value
 			bestMove = option
 		}
 
 		// Pick one of many best moves at random
-		if current.Value == bestVal && rand.Float64() < 0.5 {
+		if current.Value == bestVal && rand.Float64() > swapThreshold {
+			swapThreshold += (1 - swapThreshold) / 2
 			bestMove = option
 		}
 

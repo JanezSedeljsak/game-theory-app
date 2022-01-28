@@ -1,1 +1,1 @@
-# game-theory-challenge
+# game-theory-app

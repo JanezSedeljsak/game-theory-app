@@ -10,7 +10,7 @@ import (
 	"os/signal"
 	"runtime"
 
-	"game-theory-challenge/core/tictactoe"
+	"game-theory-app/core/tictactoe"
 
 	"github.com/zserge/lorca"
 )

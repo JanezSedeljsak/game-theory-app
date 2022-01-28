@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"game-theory-challenge/core"
+	"game-theory-app/core"
 )
 
 //go:embed app/public

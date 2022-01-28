@@ -1,4 +1,4 @@
-module game-theory-challenge
+module game-theory-app
 
 go 1.17
 
