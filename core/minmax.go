@@ -1,9 +1,7 @@
 package core
 
-const MaxUint = ^uint(0)
-const MinUint = 0
-const MaxInt = int(MaxUint >> 1)
-const MinInt = int(-MaxInt - 1)
+const MaxInt = 100
+const MinInt = -100
 const Size = 3
 
 func CalcMove(board [][]int8) Response {
@@ -15,12 +13,23 @@ func newdp() *dp {
 	return &dp{Memo: make(map[int]Response)}
 }
 
+func fullParamsHash(bHash int, isMax bool, alpha int, beta int) int {
+	bHash = 31*bHash + alpha
+	bHash = 31*bHash + beta
+	bHash = 31 * bHash
+	if isMax {
+		bHash += 1
+	}
+
+	return bHash
+}
+
 func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) Response {
-	var hash int = BoardHash(board)
-	// Turned off memoization... (bug)
-	/*if _, ok := d.Memo[hash]; ok {
+	var bHash int = BoardHash(board)
+	var hash = fullParamsHash(bHash, isMax, alpha, beta)
+	if _, ok := d.Memo[hash]; ok {
 		return d.Memo[hash]
-	}*/
+	}
 
 	var winner int8 = CheckWinner(board)
 	if winner != 0 {
