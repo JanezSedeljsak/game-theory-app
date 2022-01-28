@@ -33,7 +33,8 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 
 	var winner int8 = CheckWinner(board)
 	if winner != 0 {
-		return Response{Coord{}, int(winner)}
+		var endEval int = int(winner)*10 + (10-depth)*int(winner)
+		return Response{Coord{}, endEval}
 	} else if IsStalemate(board) {
 		return Response{Coord{}, 0}
 	}
