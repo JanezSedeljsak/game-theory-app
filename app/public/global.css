@@ -1,8 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Roboto:wght@300;400&display=swap");
 
 * {
-  color: #333;
+  color: #ddd;
   font-family: "Roboto", sans-serif;
+}
+
+body {
+  background-color: #444;
 }
 
 body,
@@ -15,7 +19,7 @@ body,
 }
 
 .grid-wrapper {
-  background-color: gray;
+  background-color: #ddd;
 }
 
 .grid-container {
@@ -26,7 +30,7 @@ body,
 }
 
 .grid-item {
-  background-color: white;
+  background-color: #444;
   display: flex;
   justify-content: center;
   align-items: center;

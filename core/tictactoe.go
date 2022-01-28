@@ -76,13 +76,18 @@ func BoardHash(board [][]int8) int {
 	return hash
 }
 
-func (ttt *tictactoe) Init() [][]int8 {
+func (ttt *tictactoe) Init(aiStart bool) [][]int8 {
 	ttt.Lock()
 	defer ttt.Unlock()
 	ttt.board = [][]int8{
 		{0, 0, 0},
 		{0, 0, 0},
 		{0, 0, 0},
+	}
+
+	if aiStart {
+		aiMove := CalcMove(ttt.board)
+		ttt.board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
 	}
 
 	return ttt.board
@@ -106,6 +111,15 @@ func (ttt *tictactoe) Mutate(board [][]int8) string {
 	return gs.Stringify()
 }
 
+func (ttt *tictactoe) Status() string {
+	var isDraw bool = IsStalemate(ttt.board)
+	var winner int = int(CheckWinner(ttt.board))
+	var isDone bool = isDraw || winner != 0
+
+	gs := GameStatus{ttt.board, winner, isDone}
+	return gs.Stringify()
+}
+
 func (gs *GameStatus) Stringify() string {
 	str, err := json.Marshal(gs)
 	if err != nil {
@@ -114,45 +128,4 @@ func (gs *GameStatus) Stringify() string {
 	}
 
 	return string(str)
-}
-
-func RunConsoleGame() {
-	myTurn := true
-	board := [][]int8{
-		{0, 0, 0},
-		{0, 0, 0},
-		{0, 0, 0},
-	}
-
-	for {
-		myTurn = !myTurn
-		var winner int8 = CheckWinner(board)
-		if winner != 0 {
-			fmt.Printf("winner is: %d\n", winner)
-			break
-		} else if IsStalemate(board) {
-			fmt.Println("Stalemate")
-			break
-		}
-
-		var x, y int
-		if myTurn {
-			for {
-				fmt.Println("Enter next coords")
-				fmt.Scanf("\n%d %d", &x, &y)
-				fmt.Printf("You have entered : %d %d\n", x, y)
-				if board[x][y] == 0 {
-					board[x][y] = 1
-					break
-				}
-
-				fmt.Println("Invalid args!!!")
-			}
-		} else {
-			aiMove := CalcMove(board)
-			board[aiMove.Coords.Row][aiMove.Coords.Col] = -1
-		}
-
-		fmt.Println(StringifyBoard(board))
-	}
 }

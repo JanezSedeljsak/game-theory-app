@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"os"
 	"tictactoe-minmax/core"
 )
 
@@ -10,10 +9,5 @@ import (
 var fs embed.FS
 
 func main() {
-	args := os.Args[1:]
-	if len(args) > 0 && args[0] == "cli" {
-		core.RunConsoleGame()
-	} else {
-		core.BuildUserInterface(fs)
-	}
+	core.RunApp(fs)
 }

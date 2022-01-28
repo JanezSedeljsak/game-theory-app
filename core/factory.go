@@ -13,16 +13,16 @@ import (
 	"github.com/zserge/lorca"
 )
 
-func BuildUserInterface(fs embed.FS) {
+func RunApp(fs embed.FS) {
 	args := []string{}
 	if runtime.GOOS == "linux" {
 		args = append(args, "--class=Lorca")
 	}
+
 	ui, err := lorca.New("", "", 800, 800, args...)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer ui.Close()
 
 	ui.Bind("start", func() {
 		log.Println("UI is ready")
@@ -31,12 +31,13 @@ func BuildUserInterface(fs embed.FS) {
 	ttt := &tictactoe{}
 	ui.Bind("mutate", ttt.Mutate)
 	ui.Bind("init", ttt.Init)
+	ui.Bind("status", ttt.Status)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer ln.Close()
+
 	go http.Serve(ln, http.FileServer(http.FS(fs)))
 	ui.Load(fmt.Sprintf("http://%s/app/public", ln.Addr()))
 	sigc := make(chan os.Signal)
@@ -46,5 +47,7 @@ func BuildUserInterface(fs embed.FS) {
 	case <-ui.Done():
 	}
 
+	defer ui.Close()
+	defer ln.Close()
 	log.Println("exiting...")
 }
