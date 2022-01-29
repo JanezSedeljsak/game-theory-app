@@ -14,14 +14,14 @@
 
 <svelte:head>
 	<title>Game Theory App - {GMEnumStr(gameMode)}</title>
-</svelte:head>  
+</svelte:head>
 
 <div class="{visible === 'landing' ? 'wrapper-background' : ''} wrapper flex-container ">
   <div class="container flex-container">
     {#if visible == "tictactoe"}
       <TicTacToe bind:visible bind:gameMode bind:showModal />
     {:else if visible == "connect4"}
-      <Connect4 bind:visible />
+      <Connect4 bind:visible bind:gameMode bind:showModal />
     {:else}
       <Landing bind:visible bind:showModal />
     {/if}
