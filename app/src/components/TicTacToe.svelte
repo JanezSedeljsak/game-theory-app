@@ -71,7 +71,7 @@
   }
 </script>
 
-<div class="grid-wrapper">
+<div class="grid-wrapper grid-wrapper-ttt">
   {#if board}
     <div class="grid-container">
       {#each board as row, i}

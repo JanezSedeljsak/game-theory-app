@@ -65,26 +65,49 @@ body {
   background-color: #ddd;
 }
 
+.grid-wrapper-cf {
+  border: 2px solid #ddd;
+  border-radius: 10px;
+}
+
 .grid-container {
   height: 100% !important;
   width: auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(160px, 1fr));
   grid-auto-rows: 1fr;
   grid-gap: 1px;
+}
+
+.grid-wrapper-ttt > .grid-container {
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+}
+
+.grid-wrapper-cf > .grid-container {
+  grid-template-columns: repeat(7, minmax(80px, 1fr));
 }
 
 .grid-item {
   background-color: #444;
 }
 
+.grid-wrapper-cf .grid-item {
+  border-radius: 10px;
+}
+
 .grid-item > div {
   font-family: "Architects Daughter", cursive;
-  font-size: 6em;
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
+}
+
+.grid-wrapper-ttt .grid-item > div {
+  font-size: 6em;
+}
+
+.grid-wrapper-cf .grid-item > div {
+  font-size: 2em;
 }
 
 .landing-container {
