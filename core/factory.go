@@ -34,6 +34,7 @@ func RunApp(fs embed.FS) {
 	ui.Bind("mutate", ttt.Mutate)
 	ui.Bind("init", ttt.Init)
 	ui.Bind("status", ttt.Status)
+	ui.Bind("random", ttt.RandomMove)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {

@@ -9,6 +9,8 @@
 
   var board = null;
   var aiStart = false;
+  var winningLine = new Set();
+
   onMount(async () => {
     board = await window.init(aiStart);
   });
@@ -25,13 +27,17 @@
     const description = !jsonResp.winner
       ? "Stalemate"
       : `${jsonResp.winner == 1 ? "O" : "X"} won!!!`;
+
+    if (jsonResp.winner != 0) {
+      winningLine = new Set(
+        jsonResp.coords.map((coord) => coord.Row * 3 + coord.Col)
+      );
+    }
+
     toasts.add({
       title: "Game finished",
       description: description,
       type: "info",
-      onRemove: async () => {
-        board = await window.init(aiStart);
-      },
     });
   }
 </script>
@@ -45,7 +51,9 @@
             class="grid-item flex-container full-size"
             on:click={() => move(i, j)}
           >
-            <div>{getSymbol(column)}</div>
+            <div class={winningLine.has(i * 3 + j) ? "text-primary" : ""}>
+              {getSymbol(column)}
+            </div>
           </div>
         {/each}
       {/each}
@@ -74,7 +82,7 @@
   }
 
   .grid-item > div {
-    font-family: 'Architects Daughter', cursive;
+    font-family: "Architects Daughter", cursive;
     font-size: 6em;
   }
 </style>

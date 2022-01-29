@@ -3,31 +3,32 @@ package tictactoe
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"strings"
 )
 
-func CheckWinner(board [][]int8) int8 {
+func CheckWinner(board [][]int8) GameStatus {
 	for i := 0; i < Size; i++ {
 		if board[i][0] != 0 && board[i][0] == board[i][1] && board[i][1] == board[i][2] {
-			return board[i][1]
+			return GameStatus{Winner: int(board[i][1]), Coords: []Coord{Coord{i, 0}, Coord{i, 1}, Coord{i, 2}}}
 		}
 
 		if board[0][i] != 0 && board[0][i] == board[1][i] && board[1][i] == board[2][i] {
-			return board[1][i]
+			return GameStatus{Winner: int(board[1][i]), Coords: []Coord{Coord{0, i}, Coord{1, i}, Coord{2, i}}}
 		}
 	}
 
 	if board[1][1] != 0 {
 		if board[0][0] == board[1][1] && board[1][1] == board[2][2] {
-			return board[1][1]
+			return GameStatus{Winner: int(board[1][1]), Coords: []Coord{Coord{0, 0}, Coord{1, 1}, Coord{2, 2}}}
 		}
 
 		if board[0][2] == board[1][1] && board[1][1] == board[2][0] {
-			return board[1][1]
+			return GameStatus{Winner: int(board[1][1]), Coords: []Coord{Coord{0, 2}, Coord{1, 1}, Coord{2, 0}}}
 		}
 	}
 
-	return 0
+	return GameStatus{Winner: 0}
 }
 
 func IsStalemate(board [][]int8) bool {
@@ -76,6 +77,19 @@ func BoardHash(board [][]int8) int {
 	return hash
 }
 
+func GetOpenSpots(board [][]int8) []Coord {
+	var spots []Coord
+	for i := 0; i < Size; i++ {
+		for j := 0; j < Size; j++ {
+			if board[i][j] == 0 {
+				spots = append(spots, Coord{i, j})
+			}
+		}
+	}
+
+	return spots
+}
+
 func (s *State) Init(aiStart bool) [][]int8 {
 	s.Lock()
 	defer s.Unlock()
@@ -117,12 +131,31 @@ func (s *State) Status(board [][]int8) string {
 	return gs.Stringify()
 }
 
+func (s *State) RandomMove(board [][]int8) string {
+	gs := getGameStatus(s.board)
+	if gs.IsDone {
+		return gs.Stringify()
+	}
+
+	s.board = board
+	gs = getGameStatus(s.board)
+	if gs.IsDone {
+		return gs.Stringify()
+	}
+
+	moveOptions := GetOpenSpots(s.board)
+	randCoord := moveOptions[rand.Intn(len(moveOptions))]
+	s.board[randCoord.Row][randCoord.Col] = -1
+	gs = getGameStatus(s.board)
+	return gs.Stringify()
+}
+
 func getGameStatus(board [][]int8) GameStatus {
 	var isDraw bool = IsStalemate(board)
-	var winner int = int(CheckWinner(board))
-	var isDone bool = isDraw || winner != 0
+	var gs GameStatus = CheckWinner(board)
+	var isDone bool = isDraw || gs.Winner != 0
 
-	return GameStatus{board, winner, isDone}
+	return GameStatus{board, gs.Winner, isDone, gs.Coords}
 }
 
 func (gs *GameStatus) Stringify() string {

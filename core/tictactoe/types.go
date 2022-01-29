@@ -25,4 +25,5 @@ type GameStatus struct {
 	Board  [][]int8 `json:"board"`
 	Winner int      `json:"winner"`
 	IsDone bool     `json:"isdone"`
+	Coords []Coord  `json:"coords"`
 }

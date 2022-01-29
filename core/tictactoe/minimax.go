@@ -33,7 +33,7 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 		return d.Memo[hash]
 	}
 
-	var winner int8 = CheckWinner(board)
+	var winner int8 = int8(CheckWinner(board).Winner)
 	if winner != 0 {
 		var endEval int = int(winner)*10 + (10-depth)*int(winner)
 		return Response{Coord{}, endEval}
@@ -41,15 +41,7 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 		return Response{Coord{}, 0}
 	}
 
-	var moveOptions []Coord
-	for i := 0; i < Size; i++ {
-		for j := 0; j < Size; j++ {
-			if board[i][j] == 0 {
-				moveOptions = append(moveOptions, Coord{i, j})
-			}
-		}
-	}
-
+	var moveOptions []Coord = GetOpenSpots(board)
 	var bestVal int = MinInt
 	var swapThreshold float64 = 0.5
 	var bestMove Coord
