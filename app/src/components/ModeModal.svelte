@@ -11,7 +11,7 @@
 
 <Modal bind:open={visible}>
   <Card>
-    <h4 slot="header">Pick gamemode</h4>
+    <h4 slot="header" class="text-primary">Pick gamemode</h4>
     <p>You can either play against a friend or some version of the game AI?</p>
 
     <div slot="footer" class="flex-container">

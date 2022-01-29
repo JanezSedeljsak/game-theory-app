@@ -33,7 +33,7 @@ func RunApp(fs embed.FS) {
 	ttt := &tictactoe.State{}
 	ui.Bind("mutateAI", ttt.Mutate)
 	ui.Bind("init", ttt.Init)
-	ui.Bind("status", ttt.Status)
+	ui.Bind("multiplayer", ttt.Multiplayer)
 	ui.Bind("mutateRand", ttt.RandomMove)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

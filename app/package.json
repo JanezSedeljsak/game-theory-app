@@ -20,6 +20,7 @@
     "svelte-chota": "^1.8.6"
   },
   "dependencies": {
+    "@mdi/js": "^6.5.95",
     "sirv-cli": "^2.0.0",
     "svelte-toasts": "^1.1.2"
   }

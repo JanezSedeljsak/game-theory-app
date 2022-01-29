@@ -32,3 +32,15 @@ export function GMEnumStr(gmenum) {
   }
 }
 
+export function getNextPlayer(xStart, playerMoveCount, gameMode) {
+  if (gameMode != GMEnum.Multiplayer) {
+    return playerMoveCount % 2 == 0 ? 1 : -1;
+  }
+
+  if (!xStart) {
+    return playerMoveCount % 2 == 0 ? 1 : -1;
+  }
+
+  return playerMoveCount % 2 != 0 ? 1 : -1;
+}
+
