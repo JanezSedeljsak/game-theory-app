@@ -1,4 +1,4 @@
-package core
+package builder
 
 import (
 	"embed"
@@ -10,8 +10,8 @@ import (
 	"os/signal"
 	"runtime"
 
-	"game-theory-app/core/connect4"
-	"game-theory-app/core/tictactoe"
+	"game-theory-app/core/modules/connect4"
+	"game-theory-app/core/modules/tictactoe"
 
 	"github.com/zserge/lorca"
 )
