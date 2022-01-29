@@ -35,7 +35,6 @@
     text-align: center;
     font-size: 2.3em;
   }
-
   .landing-container > h1 > b {
     text-transform: uppercase;
   }

@@ -1,10 +1,9 @@
 <script>
   import { Modal, Button, Card } from "svelte-chota";
-  import { GetGMEnum } from "../util";
+  import { GMEnum } from "../util";
   export let visible;
   export let gameMode;
 
-  const GMEnum = GetGMEnum();
   function pickAndClose(option) {
     gameMode = option;
     visible = false;

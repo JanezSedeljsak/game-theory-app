@@ -4,10 +4,8 @@
   import Connect4 from "./components/Connect4.svelte";
   import Landing from "./components/Landing.svelte";
   import ModeModal from "./components/ModeModal.svelte";
-  import { GetGMEnum } from "./util";
+  import { GMEnum } from "./util";
   import "chota";
-
-  const GMEnum = GetGMEnum();
 
   let visible = "landing";
   let showModal = false;
@@ -29,22 +27,3 @@
     <FlatToast {data} />
   </ToastContainer>
 </div>
-
-<style>
-  .wrapper-background {
-    background-image: url('../assets/landing.jpg') !important;
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-  .wrapper {
-    width: 100vw;
-    height: 100vh;
-    background-color: #444;
-  }
-
-  .container {
-    width: 90%;
-    height: 90%;
-    padding: 20px;
-  }
-</style>
