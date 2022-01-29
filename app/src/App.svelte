@@ -4,7 +4,7 @@
   import Connect4 from "./components/Connect4.svelte";
   import Landing from "./components/Landing.svelte";
   import ModeModal from "./components/ModeModal.svelte";
-  import { GMEnum } from "./util";
+  import { GMEnum, GMEnumStr } from "./util";
   import "chota";
 
   let visible = "landing";
@@ -12,10 +12,14 @@
   let gameMode = GMEnum.AdvancedAI;
 </script>
 
+<svelte:head>
+	<title>Game Theory App - {GMEnumStr(gameMode)}</title>
+</svelte:head>  
+
 <div class="{visible === 'landing' ? 'wrapper-background' : ''} wrapper flex-container ">
   <div class="container flex-container">
     {#if visible == "tictactoe"}
-      <TicTacToe bind:visible bind:showModal />
+      <TicTacToe bind:visible bind:gameMode />
     {:else if visible == "connect4"}
       <Connect4 bind:visible />
     {:else}

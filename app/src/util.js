@@ -19,3 +19,16 @@ export const GMEnum = {
   AdvancedAI: 3
 }
 
+export function GMEnumStr(gmenum) {
+  switch (gmenum) {
+    case GMEnum.AdvancedAI:
+      return 'Advanced AI';
+    case GMEnum.EasyAI:
+      return 'Easy AI';
+    case GMEnum.Multiplayer:
+      return 'Multiplayer';
+    default:
+      throw new Error(`Invalid enum value - ${gmenum}!`)
+  }
+}
+

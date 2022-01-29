@@ -2,10 +2,8 @@
   import { onMount } from "svelte";
   import { sleep, getSymbol } from "../util";
   import { toasts } from "svelte-toasts";
-
-  export let visible;
-  export let showModal;
-  export let gameMode;
+  import { GMEnum } from "../util";
+  export let visible, gameMode;
 
   var board = null;
   var aiStart = false;
@@ -18,15 +16,32 @@
   async function move(row, col) {
     if (board[row][col] != 0) return;
     board[row][col] = 1;
-    const response = await window.mutate(board);
+    var response;
+    switch (gameMode) {
+      case GMEnum.AdvancedAI:
+        response = await window.mutateAI(board);
+        break;
+      case GMEnum.EasyAI:
+        response = await window.mutateRand(board);
+        break;
+      case GMEnum.Multiplayer:
+        break;
+      default:
+        throw new Error(`Invalid gameMode enum - ${gameMode}!`);
+    }
+
     const jsonResp = JSON.parse(response);
     board = jsonResp.board;
+    evalResult(jsonResp);
+  }
+
+  async function evalResult(jsonResp) {
+    if (!jsonResp.isdone) return;
     await sleep();
 
-    if (!jsonResp.isdone) return;
     const description = !jsonResp.winner
       ? "Stalemate"
-      : `${jsonResp.winner == 1 ? "O" : "X"} won!!!`;
+      : `${jsonResp.winner == 1 ? "O" : "X"} won!`;
 
     if (jsonResp.winner != 0) {
       winningLine = new Set(
@@ -60,29 +75,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  .grid-wrapper {
-    height: 90%;
-    width: 90%;
-    background-color: #ddd;
-  }
-
-  .grid-container {
-    height: 100% !important;
-    width: auto;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(160px, 1fr));
-    grid-auto-rows: 1fr;
-    grid-gap: 1px;
-  }
-
-  .grid-item {
-    background-color: #444;
-  }
-
-  .grid-item > div {
-    font-family: "Architects Daughter", cursive;
-    font-size: 6em;
-  }
-</style>
