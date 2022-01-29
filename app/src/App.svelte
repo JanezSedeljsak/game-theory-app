@@ -17,7 +17,7 @@
 </svelte:head>
 
 <div class="{visible === 'landing' ? 'wrapper-background' : ''} wrapper flex-container ">
-  <div class="container flex-container">
+  <div class="{visible !== 'landing' ? 'force-top' : ''} container flex-container">
     {#if visible == "tictactoe"}
       <TicTacToe bind:visible bind:gameMode bind:showModal />
     {:else if visible == "connect4"}

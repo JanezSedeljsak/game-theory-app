@@ -30,11 +30,11 @@
   {#if board}
     <div class="grid-container">
       {#each board as row, i}
-        {#each row as column, j}
+        {#each row as _, j}
           <div class="grid-item flex-container full-size">
-            <div class={winningLine.has(i * 6 + j) ? "text-primary" : ""}>
-              O
-            </div>
+              {#if board[5 - i][j] != 0}
+                <div class="{board[5 - i][j] == 1 ? 'circle-first' : 'circle-second'} circle" />
+              {/if}
           </div>
         {/each}
       {/each}

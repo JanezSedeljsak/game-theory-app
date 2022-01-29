@@ -1,17 +1,17 @@
 package tictactoe
 
-import (
-	"game-theory-app/core/globals"
-	"math/rand"
-)
+import "math/rand"
 
-func CalcMove(board [][]int8) globals.Response {
+const MaxInt = 100
+const MinInt = -100
+
+func CalcMove(board [][]int8) Response {
 	dp := newdp()
-	return dp.minMax(board, 0, false, globals.MinInt, globals.MaxInt)
+	return dp.minMax(board, 0, false, MinInt, MaxInt)
 }
 
 func newdp() *dp {
-	return &dp{Memo: make(map[int]globals.Response)}
+	return &dp{Memo: make(map[int]Response)}
 }
 
 func fullParamsHash(bHash int, isMax bool, alpha int, beta int) int {
@@ -25,7 +25,7 @@ func fullParamsHash(bHash int, isMax bool, alpha int, beta int) int {
 	return bHash
 }
 
-func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) globals.Response {
+func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) Response {
 	var bHash int = BoardHash(board)
 	var hash = fullParamsHash(bHash, isMax, alpha, beta)
 	if _, ok := d.Memo[hash]; ok {
@@ -35,15 +35,15 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 	var winner int8 = int8(CheckWinner(board).Winner)
 	if winner != 0 {
 		var endEval int = int(winner)*10 + (10-depth)*int(winner)
-		return globals.Response{Coords: globals.Coord{}, Value: endEval}
+		return Response{Coords: Coord{}, Value: endEval}
 	} else if IsStalemate(board) {
-		return globals.Response{Coords: globals.Coord{}, Value: 0}
+		return Response{Coords: Coord{}, Value: 0}
 	}
 
-	var moveOptions []globals.Coord = GetOpenSpots(board)
-	var bestVal int = globals.MinInt
+	var moveOptions []Coord = GetOpenSpots(board)
+	var bestVal int = MinInt
 	var swapThreshold float64 = 0.5
-	var bestMove globals.Coord
+	var bestMove Coord
 
 	if isMax {
 		for _, option := range moveOptions {
@@ -72,12 +72,12 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 			}
 		}
 
-		res := globals.Response{Coords: bestMove, Value: bestVal}
+		res := Response{Coords: bestMove, Value: bestVal}
 		d.Memo[hash] = res
 		return res
 	}
 
-	bestVal = globals.MaxInt
+	bestVal = MaxInt
 	for _, option := range moveOptions {
 		board[option.Row][option.Col] = -1
 		current := d.minMax(board, depth+1, true, alpha, beta)
@@ -104,7 +104,7 @@ func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) 
 		}
 	}
 
-	res := globals.Response{Coords: bestMove, Value: bestVal}
+	res := Response{Coords: bestMove, Value: bestVal}
 	d.Memo[hash] = res
 	return res
 }

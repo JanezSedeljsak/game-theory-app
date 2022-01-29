@@ -7,5 +7,5 @@ const Width int = 7
 
 type State struct {
 	sync.Mutex
-	board [][]bool
+	board Board
 }

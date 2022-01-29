@@ -1,11 +1,18 @@
 package tictactoe
 
-import (
-	"game-theory-app/core/globals"
-	"sync"
-)
+import "sync"
 
 const Size = 3
+
+type Coord struct {
+	Row int
+	Col int
+}
+
+type Response struct {
+	Coords Coord
+	Value  int
+}
 
 type State struct {
 	sync.Mutex
@@ -13,8 +20,8 @@ type State struct {
 }
 
 type GameStatus struct {
-	Board  [][]int8        `json:"board"`
-	Winner int             `json:"winner"`
-	IsDone bool            `json:"isdone"`
-	Coords []globals.Coord `json:"coords"`
+	Board  [][]int8 `json:"board"`
+	Winner int      `json:"winner"`
+	IsDone bool     `json:"isdone"`
+	Coords []Coord  `json:"coords"`
 }

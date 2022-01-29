@@ -29,6 +29,14 @@ body {
   padding: 20px;
 }
 
+.is-rounded.button {
+  transform: scale(1.2);
+} 
+
+.force-top {
+  align-items: flex-start !important;
+}
+
 .flex-container {
   display: flex;
   justify-content: center;
@@ -68,6 +76,7 @@ body {
 .grid-wrapper-cf {
   border: 2px solid #ddd;
   border-radius: 10px;
+  padding: 10px;
 }
 
 .grid-container {
@@ -84,6 +93,7 @@ body {
 
 .grid-wrapper-cf > .grid-container {
   grid-template-columns: repeat(7, minmax(80px, 1fr));
+  grid-gap: 5px;
 }
 
 .grid-item {
@@ -91,7 +101,7 @@ body {
 }
 
 .grid-wrapper-cf .grid-item {
-  border-radius: 10px;
+  border-radius: 50%;
 }
 
 .grid-item > div {
@@ -126,4 +136,20 @@ body {
   position: fixed;
   left: 20px;
   bottom: 20px;
+}
+
+.circle {
+  display: block;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+.circle-first {
+  background: var(--color-primary);
+}
+
+.circle-second {
+  background: #2888ad;
 }
