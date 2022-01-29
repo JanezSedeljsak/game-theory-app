@@ -1,18 +1,19 @@
 <script>
   import { sleep, getSymbol, GMEnum, getNextPlayer } from "../util";
-  import { mdiHome, mdiRestart } from '@mdi/js';
-  import { onMount } from "svelte";
+  import { mdiHome, mdiRestart, mdiGamepad } from '@mdi/js';
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
   
-  export let visible, gameMode;
+  export let visible, gameMode, showModal;
 
   var board = null;
   var xStart = false;
   var winningLine = new Set();
   var playerMoveCount = 0;
 
-  onMount(resetGame);
+  // reset game on modal dispatch
+  $: (() => !showModal && resetGame())()
+
   async function resetGame() {
     xStart = !xStart;
     board = await window.init(
@@ -90,5 +91,6 @@
   <div class="stick-bottom-right">
     <Button primary class="is-rounded" icon={mdiHome} on:click={() => (visible = "landing")} />
     <Button primary class="is-rounded" icon={mdiRestart} on:click={resetGame} />
+    <Button primary class="is-rounded" icon={mdiGamepad} on:click={() => (showModal = true)} />
   </div>
 </div>
