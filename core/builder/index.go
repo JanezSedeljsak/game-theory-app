@@ -3,6 +3,8 @@ package builder
 import (
 	"embed"
 	"fmt"
+	"game-theory-app/core/modules/connect4"
+	"game-theory-app/core/modules/tictactoe"
 	"log"
 	"net"
 	"net/http"
@@ -10,26 +12,14 @@ import (
 	"os/signal"
 	"runtime"
 
-	"game-theory-app/core/modules/connect4"
-	"game-theory-app/core/modules/tictactoe"
-
 	"github.com/zserge/lorca"
 )
 
-func RunApp(fs embed.FS) {
-	args := []string{}
-	if runtime.GOOS == "linux" {
-		args = append(args, "--class=Lorca")
-	}
-
+func BuildServices(args []string, ln net.Listener) lorca.UI {
 	ui, err := lorca.New("", "", 1024, 720, args...)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	ui.Bind("start", func() {
-		log.Println("UI is ready")
-	})
 
 	ttt := &tictactoe.State{}
 	ui.Bind("ttt_mutateAI", ttt.Mutate)
@@ -40,13 +30,29 @@ func RunApp(fs embed.FS) {
 	cf := &connect4.State{}
 	ui.Bind("cf_init", cf.Init)
 
+	ui.Load(fmt.Sprintf("http://%s/app/public", ln.Addr()))
+	return ui
+}
+
+func BuildServer(fs embed.FS) net.Listener {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	go http.Serve(ln, http.FileServer(http.FS(fs)))
-	ui.Load(fmt.Sprintf("http://%s/app/public", ln.Addr()))
+	return ln
+}
+
+func RunApp(fs embed.FS) {
+	args := []string{}
+	if runtime.GOOS == "linux" {
+		args = append(args, "--class=Lorca")
+	}
+
+	ln := BuildServer(fs)
+	ui := BuildServices(args, ln)
+
 	sigc := make(chan os.Signal)
 	signal.Notify(sigc, os.Interrupt)
 	select {
@@ -56,5 +62,4 @@ func RunApp(fs embed.FS) {
 
 	defer ui.Close()
 	defer ln.Close()
-	log.Println("exiting...")
 }
