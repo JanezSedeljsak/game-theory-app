@@ -1,10 +1,9 @@
-package tictactoe
+package connect4
 
 import "sync"
 
-const MaxInt = 100
-const MinInt = -100
-const Size = 3
+const Height int = 6
+const Width int = 7
 
 type Coord struct {
 	Row int
@@ -22,11 +21,11 @@ type dp struct {
 
 type State struct {
 	sync.Mutex
-	board [][]int8
+	board [][]bool
 }
 
 type GameStatus struct {
-	Board  [][]int8 `json:"board"`
+	Board  [][]bool `json:"board"`
 	Winner int      `json:"winner"`
 	IsDone bool     `json:"isdone"`
 	Coords []Coord  `json:"coords"`

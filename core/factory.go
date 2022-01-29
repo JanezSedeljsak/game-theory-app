@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"runtime"
 
+	"game-theory-app/core/connect4"
 	"game-theory-app/core/tictactoe"
 
 	"github.com/zserge/lorca"
@@ -31,10 +32,13 @@ func RunApp(fs embed.FS) {
 	})
 
 	ttt := &tictactoe.State{}
-	ui.Bind("mutateAI", ttt.Mutate)
-	ui.Bind("init", ttt.Init)
-	ui.Bind("multiplayer", ttt.Multiplayer)
-	ui.Bind("mutateRand", ttt.RandomMove)
+	ui.Bind("ttt_mutateAI", ttt.Mutate)
+	ui.Bind("ttt_init", ttt.Init)
+	ui.Bind("ttt_multiplayer", ttt.Multiplayer)
+	ui.Bind("ttt_mutateRand", ttt.RandomMove)
+
+	cf := &connect4.State{}
+	ui.Bind("cf_init", cf.Init)
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {

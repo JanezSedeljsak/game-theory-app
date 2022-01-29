@@ -16,7 +16,7 @@
 
   async function resetGame() {
     xStart = !xStart;
-    board = await window.init(
+    board = await window.ttt_init(
       xStart && gameMode != GMEnum.Multiplayer,
       gameMode != GMEnum.AdvancedAI
     );
@@ -30,13 +30,13 @@
     var response;
     switch (gameMode) {
       case GMEnum.AdvancedAI:
-        response = await window.mutateAI(board);
+        response = await window.ttt_mutateAI(board);
         break;
       case GMEnum.EasyAI:
-        response = await window.mutateRand(board);
+        response = await window.ttt_mutateRand(board);
         break;
       case GMEnum.Multiplayer:
-        response = await window.multiplayer(board);
+        response = await window.ttt_multiplayer(board);
         break;
       default:
         throw new Error(`Invalid gameMode enum - ${gameMode}!`);

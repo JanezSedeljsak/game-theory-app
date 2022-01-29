@@ -2,10 +2,6 @@ package tictactoe
 
 import "math/rand"
 
-const MaxInt = 100
-const MinInt = -100
-const Size = 3
-
 func CalcMove(board [][]int8) Response {
 	dp := newdp()
 	return dp.minMax(board, 0, false, MinInt, MaxInt)

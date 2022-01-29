@@ -10,21 +10,21 @@ import (
 func CheckWinner(board [][]int8) GameStatus {
 	for i := 0; i < Size; i++ {
 		if board[i][0] != 0 && board[i][0] == board[i][1] && board[i][1] == board[i][2] {
-			return GameStatus{Winner: int(board[i][1]), Coords: []Coord{Coord{i, 0}, Coord{i, 1}, Coord{i, 2}}}
+			return GameStatus{Winner: int(board[i][1]), Coords: []Coord{{i, 0}, {i, 1}, {i, 2}}}
 		}
 
 		if board[0][i] != 0 && board[0][i] == board[1][i] && board[1][i] == board[2][i] {
-			return GameStatus{Winner: int(board[1][i]), Coords: []Coord{Coord{0, i}, Coord{1, i}, Coord{2, i}}}
+			return GameStatus{Winner: int(board[1][i]), Coords: []Coord{{0, i}, {1, i}, {2, i}}}
 		}
 	}
 
 	if board[1][1] != 0 {
 		if board[0][0] == board[1][1] && board[1][1] == board[2][2] {
-			return GameStatus{Winner: int(board[1][1]), Coords: []Coord{Coord{0, 0}, Coord{1, 1}, Coord{2, 2}}}
+			return GameStatus{Winner: int(board[1][1]), Coords: []Coord{{0, 0}, {1, 1}, {2, 2}}}
 		}
 
 		if board[0][2] == board[1][1] && board[1][1] == board[2][0] {
-			return GameStatus{Winner: int(board[1][1]), Coords: []Coord{Coord{0, 2}, Coord{1, 1}, Coord{2, 0}}}
+			return GameStatus{Winner: int(board[1][1]), Coords: []Coord{{0, 2}, {1, 1}, {2, 0}}}
 		}
 	}
 
