@@ -1,6 +1,10 @@
 export const GMEnum = { Multiplayer: 1, EasyAI: 2, AdvancedAI: 3 }
 export const GEnum = { Connect4: 1, TicTacToe: 2 };
 
+export function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms ?? 200));
+}
+
 export function GMEnumStr(gmenum) {
   switch (gmenum) {
     case GMEnum.AdvancedAI: return 'Advanced AI';
@@ -21,9 +25,9 @@ export async function boardAction(gameMode, mutateAI, mutateRand, multiplayer, .
 
 export function getSymbol(num) {
   switch (num) {
-    case 0: return "";
     case 1: return "O";
     case -1: return "X";
+    case 0: return "";
     default: throw new Error(`Invalid num - ${num} (0,1,-1 are the only valid args)!`);
   }
 }

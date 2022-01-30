@@ -1,5 +1,5 @@
 <script>
-  import { getNextRow, GMEnum, GEnum, getNextPlayer, evalGameStatus, boardAction } from "../util";
+  import { getNextRow, GMEnum, GEnum, getNextPlayer, evalGameStatus, boardAction, sleep } from "../util";
   import { mdiHome, mdiRestart, mdiGamepad } from "@mdi/js";
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
@@ -11,6 +11,7 @@
   var xStart = false;
   var winningLine = new Set();
   var playerMoveCount = 0;
+  var hoverCol = -1;
 
   // reset game on modal dispatch
   $: (() => !showModal && resetGame())();
@@ -27,9 +28,19 @@
     const nextRow = getNextRow(board, col);
     board[nextRow][col] = getNextPlayer(xStart, playerMoveCount, gameMode);
 
+    await sleep();
     const response = await boardAction(gameMode, cf_mutateAI, cf_mutateRand, cf_multiplayer, board, nextRow, col);
     playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
     [board, winningLine] = await evalGameStatus(response, toasts, GEnum.Connect4);
+    if (winningLine.size > 0) {
+      hoverCol = -1;
+    }
+  }
+
+  function setHover(col) {
+    if (winningLine.size == 0) {
+      hoverCol = col;
+    }
   }
 </script>
 
@@ -38,9 +49,12 @@
     <div class="grid-container">
       {#each board as row, i}
         {#each row as _, j}
+          <!-- svelte-ignore a11y-mouse-events-have-key-events -->
           <div
-            class="grid-item flex-container full-size"
+            class="{j == hoverCol ? 'hover-column' : ''} grid-item flex-container full-size"
             on:click={() => move(j)}
+            on:mouseover={() => setHover(j)}
+            on:mouseout={() => hoverCol = -1}
           >
             {#if board[5 - i][j] != 0}
               <div

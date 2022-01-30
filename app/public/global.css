@@ -8,6 +8,33 @@
   src: url("./assets/fonts/Roboto-Regular.ttf") format("truetype");
 }
 
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+  20% {
+    transform: scale(.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dropFromTop {
+  0% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(-15%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 * {
   color: whitesmoke;
   font-family: "Roboto", sans-serif;
@@ -78,11 +105,10 @@ body {
 .grid-wrapper {
   height: 90%;
   width: 90%;
-  background-color: #ddd;
+  background-color: whitesmoke;
 }
 
 .grid-wrapper-cf {
-  border: 2px solid #777;
   background-color: #777 !important;
   box-shadow: 0 4px 8px #111;
   padding: 15px;
@@ -107,6 +133,10 @@ body {
 
 .grid-item {
   background-color: #444;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 .grid-wrapper-cf .grid-item {
@@ -114,7 +144,14 @@ body {
   box-shadow: inset 0 0 10px #1119;
 }
 
+.grid-wrapper-ttt .grid-item {
+  font-family: "ArchitectsDaughter", cursive;
+  color: #555;
+  font-size: 6em;
+}
+
 .grid-item > div {
+  color: whitesmoke;
   font-family: "ArchitectsDaughter", cursive;
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -123,11 +160,7 @@ body {
 }
 
 .grid-wrapper-ttt .grid-item > div {
-  font-size: 6em;
-}
-
-.grid-wrapper-cf .grid-item > div {
-  font-size: 2em;
+  animation: .1s ease-out 0s 1 scaleIn;
 }
 
 .stick-bottom-right {
@@ -137,8 +170,10 @@ body {
 }
 
 .circle {
+  animation: .5s ease-out 0s 1 dropFromTop;
   border-radius: 50%;
   background-color: #111;
+  z-index: 0;
 }
 
 .circle-first {
@@ -171,4 +206,8 @@ body {
 
 .landing-container button.primary {
   box-shadow: 0 2px 4px #1119;
+}
+
+.hover-column {
+  background-color: #555;
 }

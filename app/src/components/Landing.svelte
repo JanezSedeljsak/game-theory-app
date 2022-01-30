@@ -8,8 +8,10 @@
   <h1>
     <span class="cursive-text">Test yourself against</span><br />
     <b>
-      <span class="text-primary">AI</span> <span class="cursive-text">&</span>
-      <span class="text-primary">game theory</span> algorithms
+      <span class="text-primary">AI</span>
+      <span class="cursive-text">&</span>
+      <span class="text-primary">game theory</span>
+      algorithms
     </b>
   </h1>
   <div>

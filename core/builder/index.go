@@ -16,7 +16,7 @@ import (
 )
 
 func RegisterActions(args []string, ln net.Listener) lorca.UI {
-	ui, err := lorca.New("", "", 960, 720, args...)
+	ui, err := lorca.New("", "", 960, 740, args...)
 	if err != nil {
 		log.Fatal(err)
 	}
