@@ -90,12 +90,42 @@ func (b *Board) CheckWinner() GameStatus {
 		// Check right diagonal
 		if c < 4 && b.cmp(r, c, r-1, c+1) && b.cmp(r, c, r-2, c+2) && b.cmp(r, c, r-3, c+3) {
 			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c + 1}, {r - 2, c + 2}, {r - 3, c + 3}}}
-
 		}
 	}
 
 	// check horizontal
-	// @TODO
+	winningLine := []Coord{{r, c}}
+	for i := c - 1; i >= 0; i-- {
+		if len(winningLine) == 4 {
+			break
+		}
+
+		if b.cmp(r, c, r, i) {
+			winningLine = append(winningLine, Coord{r, i})
+		} else {
+			break
+		}
+	}
+
+	curLen := len(winningLine)
+	if curLen < 4 && curLen+Width-c-1 >= 4 {
+		for i := c + 1; i < Width; i++ {
+			if len(winningLine) == 4 {
+				break
+			}
+
+			if b.cmp(r, c, r, i) {
+				winningLine = append(winningLine, Coord{r, i})
+
+			} else {
+				break
+			}
+		}
+	}
+
+	if len(winningLine) == 4 {
+		return GameStatus{Winner: b.Cols[c].Peek(r), Coords: winningLine}
+	}
 
 	return GameStatus{Winner: 0}
 }
