@@ -5,9 +5,9 @@ import "math/rand"
 const MaxInt = 100
 const MinInt = -100
 
-func CalcMove(board [][]int8) Response {
+func CalcMove(board [][]int) Response {
 	dp := newdp()
-	return dp.minMax(board, 0, false, MinInt, MaxInt)
+	return dp.miniMax(board, 0, false, MinInt, MaxInt)
 }
 
 func newdp() *dp {
@@ -25,18 +25,18 @@ func fullParamsHash(bHash int, isMax bool, alpha int, beta int) int {
 	return bHash
 }
 
-func (d *dp) minMax(board [][]int8, depth int, isMax bool, alpha int, beta int) Response {
+func (d *dp) miniMax(board [][]int, depth int, isMax bool, alpha int, beta int) Response {
 	var bHash int = BoardHash(board)
 	var hash = fullParamsHash(bHash, isMax, alpha, beta)
 	if _, ok := d.Memo[hash]; ok {
 		return d.Memo[hash]
 	}
 
-	var winner int8 = int8(CheckWinner(board).Winner)
+	var winner int = CheckWinner(board).Winner
 	if winner != 0 {
-		var endEval int = int(winner)*10 + (10-depth)*int(winner)
+		var endEval int = winner*10 + (10-depth)*winner
 		return Response{Coords: Coord{}, Value: endEval}
-	} else if IsStalemate(board) {
+	} else if IsDone(board) {
 		return Response{Coords: Coord{}, Value: 0}
 	}
 

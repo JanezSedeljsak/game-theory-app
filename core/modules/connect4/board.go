@@ -1,7 +1,8 @@
 package connect4
 
 type Board struct {
-	Cols [Width]Stack
+	Cols         [Width]Stack
+	lastInserted Coord
 }
 
 func (b *Board) Init() bool {
@@ -10,6 +11,10 @@ func (b *Board) Init() bool {
 	}
 
 	return true
+}
+
+func (b *Board) SetLastInserted(row int, col int) {
+	b.lastInserted = Coord{Row: row, Col: col}
 }
 
 func (b *Board) ToMatrix() [Height][Width]int {
@@ -24,19 +29,21 @@ func (b *Board) ToMatrix() [Height][Width]int {
 }
 
 func (b *Board) FromMatrix(board [Height][Width]int) {
-	for i := 0; i < Height; i++ {
-		for j := 0; j < Width; j++ {
+	for j := 0; j < Width; j++ {
+		b.Cols[j].Init(Height)
+		for i := 0; i < Height && board[i][j] != 0; i++ {
 			b.Cols[j].Push(board[i][j])
 		}
 	}
 }
 
-func (b *Board) Drop(i int, player int) bool {
-	if b.Cols[i].IsFull() {
+func (b *Board) Drop(col int, player int) bool {
+	if b.Cols[col].IsFull() {
 		return false
 	}
 
-	b.Cols[i].Push(player)
+	row := b.Cols[col].Push(player)
+	b.SetLastInserted(row, col)
 	return true
 }
 
@@ -49,4 +56,46 @@ func (b *Board) GetOpenSpots() []int {
 	}
 
 	return options
+}
+
+func (b *Board) IsDone() bool {
+	for _, col := range b.Cols {
+		if !col.IsFull() {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (b *Board) cmp(row1 int, col1 int, row2 int, col2 int) bool {
+	return b.Cols[col1].Peek(row1) == b.Cols[col2].Peek(row2)
+}
+
+func (b *Board) CheckWinner() GameStatus {
+	r := b.lastInserted.Row
+	c := b.lastInserted.Col
+
+	if r > 2 {
+		// Check vertical (down)
+		if b.cmp(r, c, r-1, c) && b.cmp(r, c, r-2, c) && b.cmp(r, c, r-3, c) {
+			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c}, {r - 2, c}, {r - 3, c}}}
+		}
+
+		// Check left diagonal
+		if c > 2 && b.cmp(r, c, r-1, c-1) && b.cmp(r, c, r-2, c-2) && b.cmp(r, c, r-3, c-3) {
+			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c - 1}, {r - 2, c - 2}, {r - 3, c - 3}}}
+		}
+
+		// Check right diagonal
+		if c < 4 && b.cmp(r, c, r-1, c+1) && b.cmp(r, c, r-2, c+2) && b.cmp(r, c, r-3, c+3) {
+			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c + 1}, {r - 2, c + 2}, {r - 3, c + 3}}}
+
+		}
+	}
+
+	// check horizontal
+	// @TODO
+
+	return GameStatus{Winner: 0}
 }

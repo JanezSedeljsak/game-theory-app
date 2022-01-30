@@ -1,6 +1,10 @@
 package tictactoe
 
-import "sync"
+import (
+	"encoding/json"
+	"fmt"
+	"sync"
+)
 
 const Size = 3
 
@@ -16,12 +20,22 @@ type Response struct {
 
 type Actions struct {
 	sync.Mutex
-	board [][]int8
+	board [][]int
 }
 
 type GameStatus struct {
-	Board  [][]int8 `json:"board"`
-	Winner int      `json:"winner"`
-	IsDone bool     `json:"isdone"`
-	Coords []Coord  `json:"coords"`
+	Board  [][]int `json:"board"`
+	Winner int     `json:"winner"`
+	IsDone bool    `json:"isdone"`
+	Coords []Coord `json:"coords"`
+}
+
+func (gs *GameStatus) Stringify() string {
+	str, err := json.Marshal(gs)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+
+	return string(str)
 }

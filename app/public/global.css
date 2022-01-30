@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Roboto:wght@300;400&display=swap");
 
 * {
-  color: #ddd;
+  color: whitesmoke;
   font-family: "Roboto", sans-serif;
 }
 
@@ -31,7 +31,7 @@ body {
 
 .is-rounded.button {
   transform: scale(1.2);
-} 
+}
 
 .force-top {
   align-items: flex-start !important;
@@ -59,7 +59,7 @@ body {
 }
 
 .button.outline {
-  color: #ddd;
+  color: whitesmoke;
 }
 
 .modal .card {
@@ -74,9 +74,10 @@ body {
 }
 
 .grid-wrapper-cf {
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  padding: 10px;
+  border: 2px solid #777;
+  background-color: #777 !important;
+  box-shadow: 0 4px 8px #111;
+  padding: 15px;
 }
 
 .grid-container {
@@ -92,8 +93,8 @@ body {
 }
 
 .grid-wrapper-cf > .grid-container {
-  grid-template-columns: repeat(7, minmax(80px, 1fr));
-  grid-gap: 5px;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 10px;
 }
 
 .grid-item {
@@ -102,6 +103,7 @@ body {
 
 .grid-wrapper-cf .grid-item {
   border-radius: 50%;
+  box-shadow: inset 0 0 10px #1119;
 }
 
 .grid-item > div {
@@ -120,6 +122,33 @@ body {
   font-size: 2em;
 }
 
+.stick-bottom-right {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+}
+
+.circle {
+  border-radius: 50%;
+  background-color: #111;
+}
+
+.circle-first {
+  background: radial-gradient(
+    circle at 50% 50px,
+    var(--color-primary),
+    #224b2c
+  );
+}
+
+.circle-second {
+  background: radial-gradient(circle at 50% 50px, whitesmoke, #888);
+}
+
+.circle-border {
+  border: 5px solid #222;
+}
+
 .landing-container {
   flex-direction: column;
   gap: 15px;
@@ -132,24 +161,6 @@ body {
   text-transform: uppercase;
 }
 
-.stick-bottom-right {
-  position: fixed;
-  left: 20px;
-  bottom: 20px;
-}
-
-.circle {
-  display: block;
-  border-radius: 50%;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-}
-
-.circle-first {
-  background: var(--color-primary);
-}
-
-.circle-second {
-  background: #2888ad;
+.landing-container button.primary {
+  box-shadow: 0 2px 4px #1119;
 }

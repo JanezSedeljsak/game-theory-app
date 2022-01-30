@@ -1,7 +1,3 @@
-export function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms ?? 200));
-}
-
 export function getSymbol(symbol) {
   switch (symbol) {
     case 0:
@@ -44,3 +40,11 @@ export function getNextPlayer(xStart, playerMoveCount, gameMode) {
   return playerMoveCount % 2 != 0 ? 1 : -1;
 }
 
+export function getNextRow(board, col) {
+  let freeRow = 0
+  while (board[freeRow][col] != 0) {
+    freeRow++;
+  }
+
+  return freeRow;
+}

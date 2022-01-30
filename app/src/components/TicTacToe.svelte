@@ -1,9 +1,10 @@
 <script>
-  import { sleep, getSymbol, GMEnum, getNextPlayer } from "../util";
+  import { getSymbol, GMEnum, getNextPlayer } from "../util";
   import { mdiHome, mdiRestart, mdiGamepad } from '@mdi/js';
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
   
+  const {ttt_init, ttt_multiplayer, ttt_mutateAI, ttt_mutateRand} = window;
   export let visible, gameMode, showModal;
 
   var board = null;
@@ -16,7 +17,7 @@
 
   async function resetGame() {
     xStart = !xStart;
-    board = await window.ttt_init(
+    board = await ttt_init(
       xStart && gameMode != GMEnum.Multiplayer,
       gameMode != GMEnum.AdvancedAI
     );
@@ -30,13 +31,13 @@
     var response;
     switch (gameMode) {
       case GMEnum.AdvancedAI:
-        response = await window.ttt_mutateAI(board);
+        response = await ttt_mutateAI(board);
         break;
       case GMEnum.EasyAI:
-        response = await window.ttt_mutateRand(board);
+        response = await ttt_mutateRand(board);
         break;
       case GMEnum.Multiplayer:
-        response = await window.ttt_multiplayer(board);
+        response = await ttt_multiplayer(board);
         break;
       default:
         throw new Error(`Invalid gameMode enum - ${gameMode}!`);
@@ -51,8 +52,6 @@
 
   async function evalResult(jsonResp) {
     if (!jsonResp.isdone) return;
-    await sleep();
-
     const description = !jsonResp.winner
       ? "Stalemate"
       : `${jsonResp.winner == 1 ? "O" : "X"} won!`;

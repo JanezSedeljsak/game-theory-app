@@ -15,8 +15,8 @@ import (
 	"github.com/zserge/lorca"
 )
 
-func BuildServices(args []string, ln net.Listener) lorca.UI {
-	ui, err := lorca.New("", "", 1024, 720, args...)
+func RegisterActions(args []string, ln net.Listener) lorca.UI {
+	ui, err := lorca.New("", "", 960, 720, args...)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,13 +32,12 @@ func BuildServices(args []string, ln net.Listener) lorca.UI {
 	ui.Bind("cf_mutateAI", cf.RandomMove) // not yet implemented -> use random for now
 	ui.Bind("cf_mutateRand", cf.RandomMove)
 	ui.Bind("cf_multiplayer", cf.Multiplayer)
-	ui.Bind("cf_playerDrop", cf.PlayerDrop)
 
 	ui.Load(fmt.Sprintf("http://%s/app/public", ln.Addr()))
 	return ui
 }
 
-func BuildServer(fs embed.FS) net.Listener {
+func BuildConnection(fs embed.FS) net.Listener {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		log.Fatal(err)
@@ -54,8 +53,8 @@ func RunApp(fs embed.FS) {
 		args = append(args, "--class=Lorca")
 	}
 
-	ln := BuildServer(fs)
-	ui := BuildServices(args, ln)
+	ln := BuildConnection(fs)
+	ui := RegisterActions(args, ln)
 
 	sigc := make(chan os.Signal)
 	signal.Notify(sigc, os.Interrupt)

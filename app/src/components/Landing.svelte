@@ -1,6 +1,6 @@
 <script>
   import { Button } from "svelte-chota";
-  import { mdiGamepad } from '@mdi/js';
+  import { mdiGamepad } from "@mdi/js";
   export let visible, showModal;
 </script>
 

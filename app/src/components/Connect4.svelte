@@ -1,9 +1,10 @@
 <script>
-  import { sleep, getSymbol, GMEnum, getNextPlayer } from "../util";
+  import { getNextRow, GMEnum, getNextPlayer } from "../util";
   import { mdiHome, mdiRestart, mdiGamepad } from "@mdi/js";
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
 
+  const { cf_init, cf_multiplayer, cf_mutateAI, cf_mutateRand } = window;
   export let visible, gameMode, showModal;
 
   var board = null;
@@ -16,7 +17,7 @@
 
   async function resetGame() {
     xStart = !xStart;
-    board = await window.cf_init(
+    board = await cf_init(
       xStart && gameMode != GMEnum.Multiplayer,
       gameMode != GMEnum.AdvancedAI
     );
@@ -25,26 +26,48 @@
   }
 
   async function move(col) {
-    if (board[5][col] != 0) return;
-    const player = getNextPlayer(xStart, playerMoveCount, gameMode);
-    board = await window.cf_playerDrop(col, player);
+    if (board[5][col] != 0 || winningLine.size != 0) return;
+    const nextRow = getNextRow(board, col);
+    board[nextRow][col] = getNextPlayer(xStart, playerMoveCount, gameMode);
+
     var response;
     switch (gameMode) {
       case GMEnum.AdvancedAI:
-        response = await window.cf_mutateAI();
+        response = await cf_mutateAI(board, nextRow, col);
         break;
       case GMEnum.EasyAI:
-        response = await window.cf_mutateRand();
+        response = await cf_mutateRand(board, nextRow, col);
         break;
       case GMEnum.Multiplayer:
-        response = await window.cf_multiplayer();
+        response = await cf_multiplayer(board, nextRow, col);
         break;
       default:
         throw new Error(`Invalid gameMode enum - ${gameMode}!`);
     }
 
     playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
-    board = response;
+    const jsonResp = JSON.parse(response);
+    board = jsonResp.board;
+    evalResult(jsonResp);
+  }
+
+  async function evalResult(jsonResp) {
+    if (!jsonResp.isdone) return;
+    const description = !jsonResp.winner
+      ? "Stalemate"
+      : `${jsonResp.winner == 1 ? "Green" : "White"} won!`;
+
+    if (jsonResp.winner != 0) {
+      winningLine = new Set(
+        jsonResp.coords.map((coord) => coord.Row * 7 + coord.Col)
+      );
+    }
+
+    toasts.add({
+      title: "Game finished",
+      description: description,
+      type: "info",
+    });
   }
 </script>
 
@@ -61,7 +84,8 @@
               <div
                 class="{board[5 - i][j] == 1
                   ? 'circle-first'
-                  : 'circle-second'} circle"
+                  : 'circle-second'} circle full-size 
+                  {winningLine.has((5 - i) * 7 + j) ? 'circle-border' : ''}"
               />
             {/if}
           </div>
