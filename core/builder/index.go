@@ -21,14 +21,18 @@ func BuildServices(args []string, ln net.Listener) lorca.UI {
 		log.Fatal(err)
 	}
 
-	ttt := &tictactoe.State{}
-	ui.Bind("ttt_mutateAI", ttt.Mutate)
+	ttt := &tictactoe.Actions{}
 	ui.Bind("ttt_init", ttt.Init)
-	ui.Bind("ttt_multiplayer", ttt.Multiplayer)
+	ui.Bind("ttt_mutateAI", ttt.Mutate)
 	ui.Bind("ttt_mutateRand", ttt.RandomMove)
+	ui.Bind("ttt_multiplayer", ttt.Multiplayer)
 
-	cf := &connect4.State{}
+	cf := &connect4.Actions{}
 	ui.Bind("cf_init", cf.Init)
+	ui.Bind("cf_mutateAI", cf.RandomMove) // not yet implemented -> use random for now
+	ui.Bind("cf_mutateRand", cf.RandomMove)
+	ui.Bind("cf_multiplayer", cf.Multiplayer)
+	ui.Bind("cf_playerDrop", cf.PlayerDrop)
 
 	ui.Load(fmt.Sprintf("http://%s/app/public", ln.Addr()))
 	return ui

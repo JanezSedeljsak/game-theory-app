@@ -24,9 +24,9 @@ func (b *Board) ToMatrix() [Height][Width]int {
 }
 
 func (b *Board) FromMatrix(board [Height][Width]int) {
-	for i, col := range b.Cols {
-		for j := 0; j < Height; j++ {
-			col.Push(board[j][i])
+	for i := 0; i < Height; i++ {
+		for j := 0; j < Width; j++ {
+			b.Cols[j].Push(board[i][j])
 		}
 	}
 }
@@ -38,4 +38,15 @@ func (b *Board) Drop(i int, player int) bool {
 
 	b.Cols[i].Push(player)
 	return true
+}
+
+func (b *Board) GetOpenSpots() []int {
+	var options []int
+	for i, col := range b.Cols {
+		if !col.IsFull() {
+			options = append(options, i)
+		}
+	}
+
+	return options
 }

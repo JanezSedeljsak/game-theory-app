@@ -94,7 +94,7 @@ func GetOpenSpots(board [][]int8) []Coord {
 	return spots
 }
 
-func (s *State) Init(aiStart bool, isAdvanced bool) [][]int8 {
+func (s *Actions) Init(aiStart bool, isAdvanced bool) [][]int8 {
 	s.Lock()
 	defer s.Unlock()
 	s.board = [][]int8{
@@ -117,7 +117,7 @@ func (s *State) Init(aiStart bool, isAdvanced bool) [][]int8 {
 	return s.board
 }
 
-func (s *State) Mutate(board [][]int8) string {
+func (s *Actions) Mutate(board [][]int8) string {
 	gs := getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()
@@ -135,13 +135,13 @@ func (s *State) Mutate(board [][]int8) string {
 	return gs.Stringify()
 }
 
-func (s *State) Multiplayer(board [][]int8) string {
+func (s *Actions) Multiplayer(board [][]int8) string {
 	s.board = board
 	gs := getGameStatus(s.board)
 	return gs.Stringify()
 }
 
-func (s *State) RandomMove(board [][]int8) string {
+func (s *Actions) RandomMove(board [][]int8) string {
 	gs := getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()

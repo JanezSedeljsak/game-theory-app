@@ -14,7 +14,7 @@ type Response struct {
 	Value  int
 }
 
-type State struct {
+type Actions struct {
 	sync.Mutex
 	board [][]int8
 }

@@ -20,9 +20,30 @@
       xStart && gameMode != GMEnum.Multiplayer,
       gameMode != GMEnum.AdvancedAI
     );
-    console.log(board);
     winningLine = new Set();
     playerMoveCount = 0;
+  }
+
+  async function move(col) {
+    if (board[0][col] != 0) return;
+    const player = getNextPlayer(xStart, playerMoveCount, gameMode);
+    board = await window.cf_playerDrop(col, player);
+    /*var response;
+    switch (gameMode) {
+      case GMEnum.AdvancedAI:
+        response = await window.cf_mutateAI(board);
+        break;
+      case GMEnum.EasyAI:
+        response = await window.cf_mutateRand(board);
+        break;
+      case GMEnum.Multiplayer:
+        response = await window.cf_multiplayer(board);
+        break;
+      default:
+        throw new Error(`Invalid gameMode enum - ${gameMode}!`);
+    }*/
+
+    playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
   }
 </script>
 
@@ -31,10 +52,17 @@
     <div class="grid-container">
       {#each board as row, i}
         {#each row as _, j}
-          <div class="grid-item flex-container full-size">
-              {#if board[5 - i][j] != 0}
-                <div class="{board[5 - i][j] == 1 ? 'circle-first' : 'circle-second'} circle" />
-              {/if}
+          <div
+            class="grid-item flex-container full-size"
+            on:click={() => move(j)}
+          >
+            {#if board[5 - i][j] != 0}
+              <div
+                class="{board[5 - i][j] == 1
+                  ? 'circle-first'
+                  : 'circle-second'} circle"
+              />
+            {/if}
           </div>
         {/each}
       {/each}

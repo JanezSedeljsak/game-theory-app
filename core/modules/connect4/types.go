@@ -5,7 +5,7 @@ import "sync"
 const Height int = 6
 const Width int = 7
 
-type State struct {
+type Actions struct {
 	sync.Mutex
 	board Board
 }
