@@ -69,54 +69,32 @@ func (b *Board) IsDone() bool {
 }
 
 func (b *Board) cmp(row1 int, col1 int, row2 int, col2 int) bool {
+	if row2 < 0 || row2 >= Height {
+		return false
+	}
+
+	if col2 < 0 || col2 >= Width {
+		return false
+	}
+
 	return b.Cols[col1].Peek(row1) == b.Cols[col2].Peek(row2)
 }
 
-func (b *Board) CheckWinner() GameStatus {
-	r := b.lastInserted.Row
-	c := b.lastInserted.Col
-
-	if r > 2 {
-		// Check vertical (down)
-		if b.cmp(r, c, r-1, c) && b.cmp(r, c, r-2, c) && b.cmp(r, c, r-3, c) {
-			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c}, {r - 2, c}, {r - 3, c}}}
-		}
-
-		// Check left diagonal
-		if c > 2 && b.cmp(r, c, r-1, c-1) && b.cmp(r, c, r-2, c-2) && b.cmp(r, c, r-3, c-3) {
-			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c - 1}, {r - 2, c - 2}, {r - 3, c - 3}}}
-		}
-
-		// Check right diagonal
-		if c < 4 && b.cmp(r, c, r-1, c+1) && b.cmp(r, c, r-2, c+2) && b.cmp(r, c, r-3, c+3) {
-			return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c + 1}, {r - 2, c + 2}, {r - 3, c + 3}}}
-		}
-	}
-
-	// check horizontal
+func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 	winningLine := []Coord{{r, c}}
-	for i := c - 1; i >= 0; i-- {
-		if len(winningLine) == 4 {
-			break
-		}
 
-		if b.cmp(r, c, r, i) {
-			winningLine = append(winningLine, Coord{r, i})
+	for i := 1; len(winningLine) != 4; i++ {
+		if b.cmp(r, c, r+i*dr, c+i*dc) {
+			winningLine = append(winningLine, Coord{r + i*dr, c + i*dc})
 		} else {
 			break
 		}
 	}
 
-	curLen := len(winningLine)
-	if curLen < 4 && curLen+Width-c-1 >= 4 {
-		for i := c + 1; i < Width; i++ {
-			if len(winningLine) == 4 {
-				break
-			}
-
-			if b.cmp(r, c, r, i) {
-				winningLine = append(winningLine, Coord{r, i})
-
+	if len(winningLine) < 4 {
+		for i := -1; len(winningLine) != 4; i-- {
+			if b.cmp(r, c, r+i*dr, c+i*dc) {
+				winningLine = append(winningLine, Coord{r + i*dr, c + i*dc})
 			} else {
 				break
 			}
@@ -128,4 +106,29 @@ func (b *Board) CheckWinner() GameStatus {
 	}
 
 	return GameStatus{Winner: 0}
+}
+
+func (b *Board) CheckWinner() GameStatus {
+	r := b.lastInserted.Row
+	c := b.lastInserted.Col
+
+	// Check vertical (down)
+	if r > 2 && b.cmp(r, c, r-1, c) && b.cmp(r, c, r-2, c) && b.cmp(r, c, r-3, c) {
+		return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c}, {r - 2, c}, {r - 3, c}}}
+	}
+
+	// Check left diagonal
+	gs := b.checkDirection(r, c, -1, -1)
+	if gs.Winner != 0 {
+		return gs
+	}
+
+	// Check right diagonal
+	gs = b.checkDirection(r, c, -1, 1)
+	if gs.Winner != 0 {
+		return gs
+	}
+
+	// Check horizontal
+	return b.checkDirection(r, c, 0, -1)
 }
