@@ -25,25 +25,26 @@
   }
 
   async function move(col) {
-    if (board[0][col] != 0) return;
+    if (board[5][col] != 0) return;
     const player = getNextPlayer(xStart, playerMoveCount, gameMode);
     board = await window.cf_playerDrop(col, player);
-    /*var response;
+    var response;
     switch (gameMode) {
       case GMEnum.AdvancedAI:
-        response = await window.cf_mutateAI(board);
+        response = await window.cf_mutateAI();
         break;
       case GMEnum.EasyAI:
-        response = await window.cf_mutateRand(board);
+        response = await window.cf_mutateRand();
         break;
       case GMEnum.Multiplayer:
-        response = await window.cf_multiplayer(board);
+        response = await window.cf_multiplayer();
         break;
       default:
         throw new Error(`Invalid gameMode enum - ${gameMode}!`);
-    }*/
+    }
 
     playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
+    board = response;
   }
 </script>
 
@@ -75,7 +76,7 @@
       icon={mdiHome}
       on:click={() => (visible = "landing")}
     />
-    <Button primary class="is-rounded" icon={mdiRestart} on:click={() => {}} />
+    <Button primary class="is-rounded" icon={mdiRestart} on:click={resetGame} />
     <Button
       primary
       class="is-rounded"

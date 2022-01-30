@@ -10,6 +10,10 @@ func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	defer s.Unlock()
 	s.board.Init()
 
+	if aiStart {
+		s.RandomMove()
+	}
+
 	return s.board.ToMatrix()
 }
 
@@ -22,11 +26,11 @@ func (s *Actions) PlayerDrop(col int, player int) [Height][Width]int {
 	return s.board.ToMatrix()
 }
 
-func (s *Actions) Multiplayer(board [Height][Width]int) [Height][Width]int {
+func (s *Actions) Multiplayer() [Height][Width]int {
 	return s.board.ToMatrix()
 }
 
-func (s *Actions) RandomMove(board [Height][Width]int) [Height][Width]int {
+func (s *Actions) RandomMove() [Height][Width]int {
 	moveOptions := s.board.GetOpenSpots()
 	randCol := moveOptions[rand.Intn(len(moveOptions))]
 	s.board.Drop(randCol, -1)
