@@ -1,10 +1,10 @@
 <script>
-  import { getSymbol, GMEnum, getNextPlayer } from "../util";
-  import { mdiHome, mdiRestart, mdiGamepad } from '@mdi/js';
+  import { getSymbol, GMEnum, GEnum, getNextPlayer, evalGameStatus, boardAction } from "../util";
+  import { mdiHome, mdiRestart, mdiGamepad } from "@mdi/js";
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
-  
-  const {ttt_init, ttt_multiplayer, ttt_mutateAI, ttt_mutateRand} = window;
+
+  const { ttt_init: init, ttt_multiplayer, ttt_mutateAI, ttt_mutateRand } = window;
   export let visible, gameMode, showModal;
 
   var board = null;
@@ -13,14 +13,11 @@
   var playerMoveCount = 0;
 
   // reset game on modal dispatch
-  $: (() => !showModal && resetGame())()
+  $: (() => !showModal && resetGame())();
 
   async function resetGame() {
     xStart = !xStart;
-    board = await ttt_init(
-      xStart && gameMode != GMEnum.Multiplayer,
-      gameMode != GMEnum.AdvancedAI
-    );
+    board = await init(xStart && gameMode != GMEnum.Multiplayer, gameMode != GMEnum.AdvancedAI);
     winningLine = new Set();
     playerMoveCount = 0;
   }
@@ -28,45 +25,10 @@
   async function move(row, col) {
     if (board[row][col] != 0 || winningLine.size != 0) return;
     board[row][col] = getNextPlayer(xStart, playerMoveCount, gameMode);
-    var response;
-    switch (gameMode) {
-      case GMEnum.AdvancedAI:
-        response = await ttt_mutateAI(board);
-        break;
-      case GMEnum.EasyAI:
-        response = await ttt_mutateRand(board);
-        break;
-      case GMEnum.Multiplayer:
-        response = await ttt_multiplayer(board);
-        break;
-      default:
-        throw new Error(`Invalid gameMode enum - ${gameMode}!`);
-    }
 
+    const response = await boardAction(gameMode, ttt_mutateAI, ttt_mutateRand, ttt_multiplayer, board);
     playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
-    const jsonResp = JSON.parse(response);
-    board = jsonResp.board;
-    evalResult(jsonResp);
-
-  }
-
-  async function evalResult(jsonResp) {
-    if (!jsonResp.isdone) return;
-    const description = !jsonResp.winner
-      ? "Stalemate"
-      : `${jsonResp.winner == 1 ? "O" : "X"} won!`;
-
-    if (jsonResp.winner != 0) {
-      winningLine = new Set(
-        jsonResp.coords.map((coord) => coord.Row * 3 + coord.Col)
-      );
-    }
-
-    toasts.add({
-      title: "Game finished",
-      description: description,
-      type: "info",
-    });
+    [board, winningLine] = await evalGameStatus(response, toasts, GEnum.TicTacToe);
   }
 </script>
 
