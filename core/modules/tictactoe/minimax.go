@@ -48,7 +48,7 @@ func (d *dp) miniMax(board [][]int, depth int, isMax bool, alpha int, beta int) 
 	if isMax {
 		for _, option := range moveOptions {
 			board[option.Row][option.Col] = 1
-			current := d.minMax(board, depth+1, false, alpha, beta)
+			current := d.miniMax(board, depth+1, false, alpha, beta)
 			board[option.Row][option.Col] = 0
 
 			if current.Value > bestVal {
@@ -80,7 +80,7 @@ func (d *dp) miniMax(board [][]int, depth int, isMax bool, alpha int, beta int) 
 	bestVal = MaxInt
 	for _, option := range moveOptions {
 		board[option.Row][option.Col] = -1
-		current := d.minMax(board, depth+1, true, alpha, beta)
+		current := d.miniMax(board, depth+1, true, alpha, beta)
 		board[option.Row][option.Col] = 0
 
 		if current.Value < bestVal {

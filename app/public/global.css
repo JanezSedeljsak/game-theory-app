@@ -1,4 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Roboto:wght@300;400&display=swap");
+@font-face {
+  font-family: "ArchitectsDaughter";
+  src: url("./assets/fonts/ArchitectsDaughter-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./assets/fonts/Roboto-Regular.ttf") format("truetype");
+}
 
 * {
   color: whitesmoke;
@@ -55,7 +63,7 @@ body {
 }
 
 .cursive-text {
-  font-family: "Architects Daughter", cursive;
+  font-family: "ArchitectsDaughter", cursive;
 }
 
 .button.outline {
@@ -107,7 +115,7 @@ body {
 }
 
 .grid-item > div {
-  font-family: "Architects Daughter", cursive;
+  font-family: "ArchitectsDaughter", cursive;
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
