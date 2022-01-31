@@ -14,20 +14,8 @@ func newdp() *dp {
 	return &dp{Memo: make(map[int]Response)}
 }
 
-func fullParamsHash(bHash int, isMax bool, alpha int, beta int) int {
-	bHash = 31*bHash + alpha
-	bHash = 31*bHash + beta
-	bHash = 31 * bHash
-	if isMax {
-		bHash += 1
-	}
-
-	return bHash
-}
-
 func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int, beta int) Response {
-	var bHash int = board.BoardHash()
-	var hash = fullParamsHash(bHash, isMax, alpha, beta)
+	var hash int = board.Hash()
 	if _, ok := d.Memo[hash]; ok {
 		return d.Memo[hash]
 	}

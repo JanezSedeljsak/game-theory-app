@@ -1,5 +1,7 @@
 package connect4
 
+import "math"
+
 type Board struct {
 	Cols         [Width]Stack
 	lastInserted Coord
@@ -131,4 +133,26 @@ func (b *Board) CheckWinner() GameStatus {
 
 	// Check horizontal
 	return b.checkDirection(r, c, 0, -1)
+}
+
+// Generate hash from binary representation of board [2^49] options
+func (b *Board) Hash() uint64 {
+	var hash uint64
+	for i, col := range b.Cols {
+		var colUnique int = i * Width
+		var top int = col.TopIndex()
+		hash += uint64(math.Pow(2, float64(colUnique+top))) * uint64(1)
+
+		for j := 0; j < Height; j++ {
+			var idx int = colUnique + j
+			var val int = col.Peek(j)
+			if val == -1 {
+				val = 0
+			}
+
+			hash += uint64(math.Pow(2, float64(idx))) * uint64(val)
+		}
+	}
+
+	return hash
 }

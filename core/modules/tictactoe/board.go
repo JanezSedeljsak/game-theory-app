@@ -1,5 +1,7 @@
 package tictactoe
 
+import "math"
+
 type Board struct {
 	board [Size][Size]int
 }
@@ -68,12 +70,17 @@ func (b *Board) IsDone() bool {
 	return true
 }
 
-func (b *Board) BoardHash() int {
+func (b *Board) Hash() int {
 	var hash int = 0
 	for i := 0; i < Size; i++ {
 		for j := 0; j < Size; j++ {
-			var val int = b.Get(i, j) + 1
-			hash = 31*hash + val
+			var idx int = i*Size + j
+			var val int = b.Get(i, j)
+			if val == -1 {
+				val = 2
+			}
+
+			hash += val * int(math.Pow(3, float64(idx)))
 		}
 	}
 

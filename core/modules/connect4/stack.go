@@ -12,26 +12,16 @@ func (s *Stack) Init(size int) bool {
 }
 
 func (s *Stack) IsFull() bool {
-	if (cap(s.items) - 1) == s.top {
-		return true
-	}
-	return false
+	return (cap(s.items) - 1) == s.top
 }
 
 func (s *Stack) IsEmpty() bool {
-	if -1 == s.top {
-		return true
-	}
-	return false
+	return -1 == s.top
 }
 
 func (s *Stack) Push(element int) int {
 	s.top++
-	if s.top == -1 {
-		s.items[0] = element
-	} else {
-		s.items[s.top] = element
-	}
+	s.items[s.top] = element
 
 	return s.top
 }
@@ -43,4 +33,8 @@ func (s *Stack) Pop() {
 
 func (s *Stack) Peek(i int) int {
 	return s.items[i]
+}
+
+func (s *Stack) TopIndex() int {
+	return s.top + 1
 }
