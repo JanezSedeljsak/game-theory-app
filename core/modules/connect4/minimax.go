@@ -26,7 +26,7 @@ func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int8, beta int8) 
 	if winner != 0 {
 		var endEval int = winner*50 + (50-depth)*winner
 		return MiniMaxState{Value: int8(endEval)}
-	} else if board.IsDone() {
+	} else if board.IsDone() || depth == 8 {
 		return MiniMaxState{Value: 0}
 	}
 
