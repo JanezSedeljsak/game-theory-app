@@ -111,8 +111,9 @@ body {
 }
 
 .grid-wrapper-cf {
-  background-color: #555 !important;
-  box-shadow: 0 4px 8px #111;
+  background-color: transparent !important;
+  box-shadow: 0 3px 6px #333c;
+  border-radius: 5px;
   padding: 15px;
 }
 
@@ -207,7 +208,7 @@ body {
 }
 
 .hover-column {
-  background-color: #555;
+  background-color: #383838;
 }
 
 .toast-container.bottom-right {

@@ -1,8 +1,6 @@
 package connect4
 
-import (
-	"math/rand"
-)
+import "math/rand"
 
 const MaxInt int8 = 100
 const MinInt int8 = -100

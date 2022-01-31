@@ -11,8 +11,8 @@ func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	s.board.Init()
 	if aiStart {
 		if isAdvanced {
-			aiMove := CalcMove(s.board)
-			s.board.Drop(int(aiMove.Col), -1)
+			// best initial move is to drop in the center
+			s.board.Drop(Width/2, -1)
 		} else {
 			moveOptions := s.board.GetOpenSpots()
 			randCol := moveOptions[rand.Intn(len(moveOptions))]
