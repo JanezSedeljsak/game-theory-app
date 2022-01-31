@@ -1,9 +1,6 @@
 package connect4
 
-import (
-	"fmt"
-	"math/rand"
-)
+import "math/rand"
 
 func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	s.Lock()
@@ -25,7 +22,6 @@ func (s *Actions) Multiplayer(board [Height][Width]int, lastRow int, lastCol int
 
 	s.board.FromMatrix(board)
 	s.board.SetLastInserted(lastRow, lastCol)
-	fmt.Println(s.board.Hash())
 
 	gs := getGameStatus(s.board)
 	return gs.Stringify()
