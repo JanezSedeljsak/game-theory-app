@@ -19,6 +19,10 @@ func (b *Board) SetLastInserted(row int, col int) {
 	b.lastInserted = Coord{Row: row, Col: col}
 }
 
+func (b *Board) Pop(col int) {
+	b.Cols[col].Pop()
+}
+
 func (b *Board) ToMatrix() [Height][Width]int {
 	var board [Height][Width]int
 	for i, col := range b.Cols {

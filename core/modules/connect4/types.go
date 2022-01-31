@@ -14,14 +14,17 @@ type Actions struct {
 	board Board
 }
 
+type dp struct {
+	Memo map[uint64]MiniMaxState
+}
+
 type Coord struct {
 	Row int
 	Col int
 }
 
 // Seperate from Coord to preserve memory within tree evaluation
-type Response struct {
-	Row   int8
+type MiniMaxState struct {
 	Col   int8
 	Value int8
 }

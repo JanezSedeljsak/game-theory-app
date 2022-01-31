@@ -1,6 +1,8 @@
 package connect4
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	s.Lock()
@@ -8,12 +10,40 @@ func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 
 	s.board.Init()
 	if aiStart {
-		moveOptions := s.board.GetOpenSpots()
-		randCol := moveOptions[rand.Intn(len(moveOptions))]
-		s.board.Drop(randCol, -1)
+		if isAdvanced {
+			aiMove := CalcMove(s.board)
+			s.board.Drop(int(aiMove.Col), -1)
+		} else {
+			moveOptions := s.board.GetOpenSpots()
+			randCol := moveOptions[rand.Intn(len(moveOptions))]
+			s.board.Drop(randCol, -1)
+		}
 	}
 
 	return s.board.ToMatrix()
+}
+
+func (s *Actions) Mutate(board [Height][Width]int, lastRow int, lastCol int) string {
+	s.Lock()
+	defer s.Unlock()
+
+	gs := getGameStatus(s.board)
+	if gs.IsDone {
+		return gs.Stringify()
+	}
+
+	s.board.FromMatrix(board)
+	s.board.SetLastInserted(lastRow, lastCol)
+	gs = getGameStatus(s.board)
+	if gs.IsDone {
+		return gs.Stringify()
+	}
+
+	aiMove := CalcMove(s.board)
+	s.board.Drop(int(aiMove.Col), -1)
+
+	gs = getGameStatus(s.board)
+	return gs.Stringify()
 }
 
 func (s *Actions) Multiplayer(board [Height][Width]int, lastRow int, lastCol int) string {

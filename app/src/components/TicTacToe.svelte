@@ -19,7 +19,7 @@
 
   async function resetGame() {
     xStart = !xStart;
-    board = await init(xStart && gameMode != GMEnum.Multiplayer, gameMode != GMEnum.AdvancedAI);
+    board = await init(xStart && gameMode != GMEnum.Multiplayer, gameMode == GMEnum.AdvancedAI);
     winningLine = new Set();
     playerMoveCount = 0;
     nextPlayer = getNextPlayer(xStart, playerMoveCount, gameMode);

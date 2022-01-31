@@ -29,7 +29,7 @@ func RegisterActions(args []string, ln net.Listener) lorca.UI {
 
 	cf := &connect4.Actions{}
 	ui.Bind("cf_init", cf.Init)
-	ui.Bind("cf_mutateAI", cf.RandomMove) // not yet implemented -> use random for now
+	ui.Bind("cf_mutateAI", cf.Mutate)
 	ui.Bind("cf_mutateRand", cf.RandomMove)
 	ui.Bind("cf_multiplayer", cf.Multiplayer)
 
