@@ -2,8 +2,8 @@ package tictactoe
 
 import "math/rand"
 
-const MaxInt = 100
-const MinInt = -100
+const MaxInt int8 = 100
+const MinInt int8 = -100
 
 func CalcMove(board Board) Response {
 	dp := newdp()
@@ -14,7 +14,7 @@ func newdp() *dp {
 	return &dp{Memo: make(map[int]Response)}
 }
 
-func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int, beta int) Response {
+func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int8, beta int8) Response {
 	var hash int = board.Hash()
 	if _, ok := d.Memo[hash]; ok {
 		return d.Memo[hash]
@@ -23,13 +23,13 @@ func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int, beta int) Re
 	var winner int = board.CheckWinner().Winner
 	if winner != 0 {
 		var endEval int = winner*10 + (10-depth)*winner
-		return Response{Coords: Coord{}, Value: endEval}
+		return Response{Value: int8(endEval)}
 	} else if board.IsDone() {
-		return Response{Coords: Coord{}, Value: 0}
+		return Response{Value: 0}
 	}
 
 	var moveOptions []Coord = board.GetOpenSpots()
-	var bestVal int = MinInt
+	var bestVal int8 = MinInt
 	var swapThreshold float64 = 0.5
 	var bestMove Coord
 
@@ -60,7 +60,7 @@ func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int, beta int) Re
 			}
 		}
 
-		res := Response{Coords: bestMove, Value: bestVal}
+		res := Response{Row: int8(bestMove.Row), Col: int8(bestMove.Col), Value: bestVal}
 		d.Memo[hash] = res
 		return res
 	}
@@ -92,7 +92,7 @@ func (d *dp) miniMax(board Board, depth int, isMax bool, alpha int, beta int) Re
 		}
 	}
 
-	res := Response{Coords: bestMove, Value: bestVal}
+	res := Response{Row: int8(bestMove.Row), Col: int8(bestMove.Col), Value: bestVal}
 	d.Memo[hash] = res
 	return res
 }

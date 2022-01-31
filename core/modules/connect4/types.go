@@ -19,6 +19,13 @@ type Coord struct {
 	Col int
 }
 
+// Seperate from Coord to preserve memory within tree evaluation
+type Response struct {
+	Row   int8
+	Col   int8
+	Value int8
+}
+
 type GameStatus struct {
 	Board  [6][7]int `json:"board"`
 	Winner int       `json:"winner"`

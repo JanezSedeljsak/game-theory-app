@@ -17,9 +17,11 @@ type Coord struct {
 	Col int
 }
 
+// Seperate from Coord to preserve memory within tree evaluation
 type Response struct {
-	Coords Coord
-	Value  int
+	Row   int8
+	Col   int8
+	Value int8
 }
 
 type Actions struct {

@@ -1,19 +1,16 @@
 package tictactoe
 
-import (
-	"math/rand"
-)
+import "math/rand"
 
 func (s *Actions) Init(aiStart bool, isAdvanced bool) [3][3]int {
 	s.Lock()
 	defer s.Unlock()
 
 	s.board.Init()
-
 	if aiStart {
 		if isAdvanced {
 			aiMove := CalcMove(s.board)
-			s.board.Set(aiMove.Coords.Row, aiMove.Coords.Col, -1)
+			s.board.Set(int(aiMove.Row), int(aiMove.Col), -1)
 		} else {
 			moveOptions := s.board.GetOpenSpots()
 			randCoord := moveOptions[rand.Intn(len(moveOptions))]
@@ -40,7 +37,7 @@ func (s *Actions) Mutate(board [Size][Size]int) string {
 	}
 
 	aiMove := CalcMove(s.board)
-	s.board.Set(aiMove.Coords.Row, aiMove.Coords.Col, -1)
+	s.board.Set(int(aiMove.Row), int(aiMove.Col), -1)
 	gs = getGameStatus(s.board)
 	return gs.Stringify()
 }
