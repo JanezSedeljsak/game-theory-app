@@ -50,20 +50,24 @@
       {#each board as row, i}
         {#each row as _, j}
           <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-          <div
-            class="{j == hoverCol ? 'hover-column' : ''} grid-item flex-container full-size"
-            on:click={() => move(j)}
+          <div 
+            class="flex-container full-size"
             on:mouseover={() => setHover(j)}
             on:mouseout={() => hoverCol = -1}
+            on:click={() => move(j)}
+            style="padding: 5px"
           >
-            {#if board[5 - i][j] != 0}
-              <div
-                class="{board[5 - i][j] == 1
-                  ? 'circle-first'
-                  : 'circle-second'} circle full-size 
-                  {winningLine.has((5 - i) * 7 + j) ? 'circle-border' : ''}"
-              />
-            {/if}
+            <div
+              class="{j == hoverCol ? 'hover-column' : ''} grid-item flex-container full-size">
+              {#if board[5 - i][j] != 0}
+                <div
+                  class="{board[5 - i][j] == 1
+                    ? 'circle-first'
+                    : 'circle-second'} circle full-size 
+                    {winningLine.has((5 - i) * 7 + j) ? 'circle-border' : ''}"
+                />
+              {/if}
+            </div>
           </div>
         {/each}
       {/each}

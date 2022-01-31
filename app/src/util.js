@@ -34,7 +34,7 @@ export function getSymbol(num) {
 
 function getPlayerLabels(game) {
   switch (game) {
-    case GEnum.Connect4: return ['Green', 'White'];
+    case GEnum.Connect4: return ['Green', 'Black'];
     case GEnum.TicTacToe: return ['O', 'X'];
     default: throw new Error(`Invalid game enum - ${game}!`);
   }
