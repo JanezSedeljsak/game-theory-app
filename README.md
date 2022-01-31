@@ -4,9 +4,15 @@
 
 The past year I've learned a lot about artificial intelligence, heuristic algorithms, crafting & optimization of algorithms. For this reason I've decided to test my skills and code a basic Tic-tac-toe solver...
 
-The actual logic of the game-theory algorithms is written in [GO](https://go.dev) and on top of that I've added a user interface written in [Svelte](https://svelte.dev) and served via [Lorca](https://github.com/zserge/lorca) from [GO](https://go.dev).
+The actual logic for the game-theory algorithm is written in [GO](https://go.dev) and on top of that I've built a user interface written in [Svelte](https://svelte.dev) ~ served via [Lorca](https://github.com/zserge/lorca) from [GO](https://go.dev).
 
-Tic-tac-toe has a very limited space complexity (there are 3^9 = 19683 possible field layouts) which was easily handled by a basic [Minimax algorithm](https://en.wikipedia.org/wiki/Minimax), nevertheless I've optimized it with [Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha–beta_pruning) and state [Memoization](https://en.wikipedia.org/wiki/Memoization) with a simple [Dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming) approach.
+Tic-tac-toe has a very limited space complexity (there are 3^9 = 19683 possible layouts) which was easily handled by a basic [Minimax algorithm](https://en.wikipedia.org/wiki/Minimax). Nevertheless, I decided to implement [Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha–beta_pruning) and state [Memoization](https://en.wikipedia.org/wiki/Memoization) with a simple [Dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming) approach of caching solutions via hash values of the current layout.
+
+## Connect 4
+
+On the other hand connect 4 was a whole different problem, here the space complexity is much much bigger, there are more than 2^42 possible layouts, which is more than 500GB of data if you wanted to store that (and that is only taking into consideration storing the layouts nevermind the solution)...
+
+Therefore I am currently cutting of the search tree on depth 8, which is 7^8 = 5764801 possible layouts on each evaluation... The plan is to go a couple of levels deeper with heuristic evaluation of moves to consequently improve the performance of the game-theory algorithm.
 
 ![No image](https://github.com/JanezSedeljsak/game-theory-app/blob/main/docs/banner.png)
 
