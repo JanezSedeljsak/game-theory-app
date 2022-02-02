@@ -12,7 +12,67 @@ Tic-tac-toe has a very limited space complexity (there are 3^9 = 19683 possible 
 
 On the other hand connect 4 was a whole different problem, here the space complexity is much much bigger, there are more than 2^42 possible layouts, which is more than 500GB of data if you wanted to store that (and that is only taking into consideration storing the layouts nevermind the solution)...
 
-Therefore I am currently cutting of the search tree on depth 8, which is 7^8 = 5764801 possible layouts on each evaluation... The plan is to go a couple of levels deeper with heuristic evaluation of moves to consequently improve the performance of the game-theory algorithm.
+In its current state the algorithm holds up quite well against the AI on: [coonect4.gamesolver](https://connect4.gamesolver.org).<br/>
+Improvements made to the miniMax algorithm:
+* [Negamax](https://en.wikipedia.org/wiki/Negamax)ish
+* [Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha–beta_pruning)
+* [Iterative deepening](https://www.chessprogramming.org/Iterative_Deepening) & [Memoization](https://en.wikipedia.org/wiki/Memoization)
+
+### Pseudocode of the main negaMax algorithm
+```go
+func iterativeDeepening(board) {
+  best = +INF
+
+  for depth -> [4...30] {
+    MaxDepth = depth
+    best = min(best, negaMax(board, 0, -1, -INF, +INF))
+  }
+
+  return best
+}
+
+
+func negaMax(board, depth, color, alpha, beta) {
+  hash = board.Hash()
+  if hash in memo {
+    return memo[hash]
+  }
+
+  winner = board.CheckWinner()
+  if winner != 0 {
+    return (50 * winner) - (depth * winner) // calculate score based od depth
+  } else if depth == MaxDepth {
+    return 0 // reached max depth (score is 0)
+  }
+  
+  // sort columns based on some heuristic score
+  for option in sortedOptions {
+    board.Drop(option, color) // insert pin to board
+    newVal = negaMax(board, depth+1, -color, alpha, beta) // recursive call
+    board.Pop() // remove last inserted pin
+
+    // if maximizing player & found better(HIGHER) score
+    if color == 1 && newVal > bestVal {
+      bestVal = newVal
+      alpha = max(alpha, newVal)
+    }
+    
+    // if minimizing player & found better(LOWER) score
+    else if color == -1 && newVal < bestVal {
+      bestVal = newVal
+      beta = min(beta, newVal)
+    }
+
+    // prune when alpha is bigger than beta
+    if alpha > beta {
+      break
+    }
+  }
+
+  memo[hash] = bestVal
+  return res
+}
+```
 
 ![No image](https://github.com/JanezSedeljsak/game-theory-app/blob/main/docs/banner.png)
 
