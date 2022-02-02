@@ -4,7 +4,7 @@ import "math"
 
 type Board struct {
 	Cols         [Width]Stack
-	lastInserted Coord
+	lastInserted int
 }
 
 func (b *Board) Init() bool {
@@ -15,8 +15,8 @@ func (b *Board) Init() bool {
 	return true
 }
 
-func (b *Board) SetLastInserted(row int, col int) {
-	b.lastInserted = Coord{Row: row, Col: col}
+func (b *Board) SetLastInserted(col int) {
+	b.lastInserted = col
 }
 
 func (b *Board) Pop(col int) {
@@ -48,8 +48,8 @@ func (b *Board) Drop(col int, player int) bool {
 		return false
 	}
 
-	row := b.Cols[col].Push(player)
-	b.SetLastInserted(row, col)
+	b.Cols[col].Push(player)
+	b.SetLastInserted(col)
 	return true
 }
 
@@ -115,8 +115,8 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 }
 
 func (b *Board) CheckWinner() GameStatus {
-	r := b.lastInserted.Row
-	c := b.lastInserted.Col
+	c := b.lastInserted
+	r := b.Cols[c].top
 
 	// Check vertical (down)
 	if r > 2 && b.cmp(r, c, r-1, c) && b.cmp(r, c, r-2, c) && b.cmp(r, c, r-3, c) {

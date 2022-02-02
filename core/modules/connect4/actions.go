@@ -23,7 +23,7 @@ func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	return s.board.ToMatrix()
 }
 
-func (s *Actions) Mutate(board [Height][Width]int, lastRow int, lastCol int) string {
+func (s *Actions) Mutate(board [Height][Width]int, lastCol int) string {
 	s.Lock()
 	defer s.Unlock()
 
@@ -33,7 +33,7 @@ func (s *Actions) Mutate(board [Height][Width]int, lastRow int, lastCol int) str
 	}
 
 	s.board.FromMatrix(board)
-	s.board.SetLastInserted(lastRow, lastCol)
+	s.board.SetLastInserted(lastCol)
 	gs = getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()
@@ -46,18 +46,18 @@ func (s *Actions) Mutate(board [Height][Width]int, lastRow int, lastCol int) str
 	return gs.Stringify()
 }
 
-func (s *Actions) Multiplayer(board [Height][Width]int, lastRow int, lastCol int) string {
+func (s *Actions) Multiplayer(board [Height][Width]int, lastCol int) string {
 	s.Lock()
 	defer s.Unlock()
 
 	s.board.FromMatrix(board)
-	s.board.SetLastInserted(lastRow, lastCol)
+	s.board.SetLastInserted(lastCol)
 
 	gs := getGameStatus(s.board)
 	return gs.Stringify()
 }
 
-func (s *Actions) RandomMove(board [Height][Width]int, lastRow int, lastCol int) string {
+func (s *Actions) RandomMove(board [Height][Width]int, lastCol int) string {
 	s.Lock()
 	defer s.Unlock()
 
@@ -67,7 +67,7 @@ func (s *Actions) RandomMove(board [Height][Width]int, lastRow int, lastCol int)
 	}
 
 	s.board.FromMatrix(board)
-	s.board.SetLastInserted(lastRow, lastCol)
+	s.board.SetLastInserted(lastCol)
 	gs = getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()

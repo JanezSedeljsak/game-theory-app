@@ -29,7 +29,7 @@
     board[nextRow][col] = getNextPlayer(xStart, playerMoveCount, gameMode);
 
     await sleep();
-    const response = await boardAction(gameMode, cf_mutateAI, cf_mutateRand, cf_multiplayer, board, nextRow, col);
+    const response = await boardAction(gameMode, cf_mutateAI, cf_mutateRand, cf_multiplayer, board, col);
     playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
     [board, winningLine] = await evalGameStatus(response, toasts, GEnum.Connect4);
     if (winningLine.size > 0) {

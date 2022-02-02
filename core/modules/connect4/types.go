@@ -14,7 +14,7 @@ type Actions struct {
 	board Board
 }
 
-type dp struct {
+type Dp struct {
 	Memo map[uint64]MiniMaxState
 }
 

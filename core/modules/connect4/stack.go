@@ -19,11 +19,9 @@ func (s *Stack) IsEmpty() bool {
 	return -1 == s.top
 }
 
-func (s *Stack) Push(element int) int {
+func (s *Stack) Push(element int) {
 	s.top++
 	s.items[s.top] = element
-
-	return s.top
 }
 
 func (s *Stack) Pop() {

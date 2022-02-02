@@ -1,31 +1,33 @@
-package connect4
+package testing
 
-import "math/rand"
+import (
+	"game-theory-app/core/modules/connect4"
+	"math/rand"
+)
 
 const MaxInt int8 = 100
 const MinInt int8 = -100
 
-func CalcMove(board Board) MiniMaxState {
-	dp := newdp()
-	return dp.miniMax(board, 0, false, MinInt, MaxInt)
+func (t *Test) CalcMove(board connect4.Board) connect4.MiniMaxState {
+	res := t.miniMax(board, t.depth, false, MinInt, MaxInt)
+	return res
 }
 
-func newdp() *Dp {
-	return &Dp{Memo: make(map[uint64]MiniMaxState)}
-}
-
-func (d *Dp) miniMax(board Board, depth int, isMax bool, alpha int8, beta int8) MiniMaxState {
-	var hash uint64 = board.Hash()
-	if _, ok := d.Memo[hash]; ok {
-		return d.Memo[hash]
+func (t *Test) miniMax(board connect4.Board, depth int, isMax bool, alpha int8, beta int8) connect4.MiniMaxState {
+	var hash uint64
+	if t.isDp {
+		hash = board.Hash()
+		if _, ok := t.dp.Memo[hash]; ok {
+			return t.dp.Memo[hash]
+		}
 	}
 
 	var winner int = board.CheckWinner().Winner
 	if winner != 0 {
 		var endEval int = winner*50 + (50-depth)*winner
-		return MiniMaxState{Value: int8(endEval)}
+		return connect4.MiniMaxState{Value: int8(endEval)}
 	} else if depth == 8 || board.IsDone() {
-		return MiniMaxState{Value: 0}
+		return connect4.MiniMaxState{Value: 0}
 	}
 
 	var moveOptions []int = board.GetOpenSpots()
@@ -36,7 +38,7 @@ func (d *Dp) miniMax(board Board, depth int, isMax bool, alpha int8, beta int8) 
 	if isMax {
 		for _, option := range moveOptions {
 			board.Drop(option, 1)
-			current := d.miniMax(board, depth+1, false, alpha, beta)
+			current := t.miniMax(board, depth+1, false, alpha, beta)
 			board.Pop(option)
 
 			if current.Value > bestVal {
@@ -55,20 +57,23 @@ func (d *Dp) miniMax(board Board, depth int, isMax bool, alpha int8, beta int8) 
 				alpha = bestVal
 			}
 
-			if beta < alpha {
+			if t.isAlphaBeta && beta < alpha {
 				break
 			}
 		}
 
-		res := MiniMaxState{Col: int8(bestMove), Value: bestVal}
-		d.Memo[hash] = res
+		res := connect4.MiniMaxState{Col: int8(bestMove), Value: bestVal}
+		if t.isDp {
+			t.dp.Memo[hash] = res
+		}
+
 		return res
 	}
 
 	bestVal = MaxInt
 	for _, option := range moveOptions {
 		board.Drop(option, -1)
-		current := d.miniMax(board, depth+1, true, alpha, beta)
+		current := t.miniMax(board, depth+1, true, alpha, beta)
 		board.Pop(option)
 
 		if current.Value < bestVal {
@@ -87,12 +92,15 @@ func (d *Dp) miniMax(board Board, depth int, isMax bool, alpha int8, beta int8) 
 			beta = bestVal
 		}
 
-		if beta < alpha {
+		if t.isAlphaBeta && beta < alpha {
 			break
 		}
 	}
 
-	res := MiniMaxState{Col: int8(bestMove), Value: bestVal}
-	d.Memo[hash] = res
+	res := connect4.MiniMaxState{Col: int8(bestMove), Value: bestVal}
+	if t.isDp {
+		t.dp.Memo[hash] = res
+	}
+
 	return res
 }
