@@ -27,14 +27,9 @@ func (s *Actions) Mutate(board [Height][Width]int, lastCol int) string {
 	s.Lock()
 	defer s.Unlock()
 
-	gs := getGameStatus(s.board)
-	if gs.IsDone {
-		return gs.Stringify()
-	}
-
 	s.board.FromMatrix(board)
 	s.board.SetLastInserted(lastCol)
-	gs = getGameStatus(s.board)
+	gs := getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()
 	}

@@ -1,6 +1,9 @@
 package connect4
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type Board struct {
 	Cols         [Width]Stack
@@ -119,6 +122,7 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 func (b *Board) CheckWinner() GameStatus {
 	c := b.lastInserted
 	if c == -1 {
+		fmt.Println("no prev")
 		return GameStatus{Winner: 0}
 	}
 
