@@ -18,62 +18,6 @@ Improvements made to the miniMax algorithm:
 * [Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha–beta_pruning)
 * [Iterative deepening](https://www.chessprogramming.org/Iterative_Deepening) & [Memoization](https://en.wikipedia.org/wiki/Memoization)
 
-### Pseudocode of the main negaMax algorithm
-```go
-func iterativeDeepening(board) {
-  best = +INF
-
-  for depth -> [4...30] {
-    MaxDepth = depth
-    best = min(best, negaMax(board, 0, -1, -INF, +INF))
-  }
-
-  return best
-}
-
-
-func negaMax(board, depth, color, alpha, beta) {
-  hash = board.Hash()
-  if hash in memo {
-    return memo[hash]
-  }
-
-  winner = board.CheckWinner()
-  if winner != 0 {
-    return (50 * winner) - (depth * winner) // calculate score based od depth
-  } else if depth == MaxDepth {
-    return 0 // reached max depth (score is 0)
-  }
-  
-  // sort columns based on some heuristic score
-  for option in sortedOptions {
-    board.Drop(option, color) // insert pin to board
-    newVal = negaMax(board, depth+1, -color, alpha, beta) // recursive call
-    board.Pop() // remove last inserted pin
-
-    // if maximizing player & found better(HIGHER) score
-    if color == 1 && newVal > bestVal {
-      bestVal = newVal
-      alpha = max(alpha, newVal)
-    }
-    
-    // if minimizing player & found better(LOWER) score
-    else if color == -1 && newVal < bestVal {
-      bestVal = newVal
-      beta = min(beta, newVal)
-    }
-
-    // prune when alpha is bigger than beta
-    if alpha > beta {
-      break
-    }
-  }
-
-  memo[hash] = bestVal
-  return res
-}
-```
-
 ![No image](https://github.com/JanezSedeljsak/game-theory-app/blob/main/docs/banner.png)
 
 ### Install locally

@@ -17,11 +17,15 @@ func newdp() *dp {
 func (dp *dp) iterativeDeepening(board Board) MiniMaxState {
 	best := MiniMaxState{Value: MaxScore}
 
-	for depth := 4; depth < 50; depth++ {
+	for depth := 4; depth < 13; depth++ {
 		dp.MaxDepth = depth
 		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
 		if curRes.Value < best.Value {
 			best = curRes
+		}
+
+		if best.Value < 0 {
+			break
 		}
 	}
 
@@ -70,7 +74,7 @@ func (dp *dp) negaMax(board Board, depth int, color int, alpha int8, beta int8) 
 			}
 		}
 
-		if alpha > beta {
+		if alpha >= beta {
 			break
 		}
 	}
@@ -80,6 +84,9 @@ func (dp *dp) negaMax(board Board, depth int, color int, alpha int8, beta int8) 
 	}
 
 	res := MiniMaxState{Col: bestMove, Value: bestVal}
-	dp.Memo[hash] = res.Value
+	if bestVal != 0 {
+		dp.Memo[hash] = res.Value
+	}
+
 	return res
 }
