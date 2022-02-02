@@ -1,7 +1,5 @@
 package connect4
 
-import "fmt"
-
 const MaxScore int8 = 100
 const MinScore int8 = -100
 
@@ -9,30 +7,28 @@ const MinScore int8 = -100
 var ExploreOrder = [...]int8{3, 4, 2, 5, 1, 6, 0}
 
 func CalcMove(board Board) MiniMaxState {
-	return iterativeDeepening(board)
+	return newdp().iterativeDeepening(board)
 }
 
 func newdp() *dp {
 	return &dp{Memo: make(map[uint64]int8)}
 }
 
-func iterativeDeepening(board Board) MiniMaxState {
-	dp := newdp()
-	curBest := MaxScore
-	var curRes MiniMaxState
+func (dp *dp) iterativeDeepening(board Board) MiniMaxState {
+	best := MiniMaxState{Value: MaxScore}
 
-	for i := 3; i < 15; i++ {
-		res := dp.negaMax(board, 0, -1, i, MinScore, MaxScore)
-		if res.Value < curBest {
-			curBest = res.Value
-			curRes = res
+	for depth := 4; depth < 50; depth++ {
+		dp.MaxDepth = depth
+		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
+		if curRes.Value < best.Value {
+			best = curRes
 		}
 	}
 
-	return curRes
+	return best
 }
 
-func (dp *dp) negaMax(board Board, depth int, color int, maxDepth int, alpha int8, beta int8) MiniMaxState {
+func (dp *dp) negaMax(board Board, depth int, color int, alpha int8, beta int8) MiniMaxState {
 	hash := board.Hash()
 	if _, ok := dp.Memo[hash]; ok {
 		return MiniMaxState{Value: dp.Memo[hash]}
@@ -40,14 +36,13 @@ func (dp *dp) negaMax(board Board, depth int, color int, maxDepth int, alpha int
 
 	var winner int = board.CheckWinner().Winner
 	if winner != 0 {
-		var endEval int = winner*50 + (50-depth)*winner
-		fmt.Println(endEval * color)
-		return MiniMaxState{Value: int8(endEval * color)}
-	} else if depth == maxDepth {
+		endEval := (50 * winner) - (depth * winner)
+		return MiniMaxState{Value: int8(endEval)}
+	} else if depth == dp.MaxDepth {
 		return MiniMaxState{Value: 0}
 	}
 
-	var bestVal int8 = MinScore
+	var bestVal int8 = MinScore * int8(color)
 	var foundOption bool = false
 	var bestMove int8
 
@@ -58,19 +53,24 @@ func (dp *dp) negaMax(board Board, depth int, color int, maxDepth int, alpha int
 
 		foundOption = true
 		board.Drop(int(option), color)
-		newVal := -dp.negaMax(board, depth+1, -color, maxDepth, -beta, -alpha).Value
+		newVal := dp.negaMax(board, depth+1, -color, alpha, beta).Value
 		board.Pop()
 
-		if newVal > bestVal {
+		if color == 1 && newVal > bestVal {
 			bestVal = newVal
 			bestMove = option
+			if bestVal > alpha {
+				alpha = newVal
+			}
+		} else if color == -1 && newVal < bestVal {
+			bestVal = newVal
+			bestMove = option
+			if bestVal < beta {
+				beta = newVal
+			}
 		}
 
-		if newVal > alpha {
-			alpha = newVal
-		}
-
-		if alpha >= beta {
+		if alpha > beta {
 			break
 		}
 	}
@@ -79,7 +79,7 @@ func (dp *dp) negaMax(board Board, depth int, color int, maxDepth int, alpha int
 		return MiniMaxState{Value: 0}
 	}
 
-	res := MiniMaxState{Col: bestMove, Value: bestVal * int8(color)}
+	res := MiniMaxState{Col: bestMove, Value: bestVal}
 	dp.Memo[hash] = res.Value
 	return res
 }

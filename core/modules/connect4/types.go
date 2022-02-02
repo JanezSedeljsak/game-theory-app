@@ -15,7 +15,8 @@ type Actions struct {
 }
 
 type dp struct {
-	Memo map[uint64]int8
+	Memo     map[uint64]int8
+	MaxDepth int
 }
 
 type Coord struct {
