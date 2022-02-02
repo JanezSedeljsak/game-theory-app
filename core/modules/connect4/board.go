@@ -8,6 +8,7 @@ type Board struct {
 }
 
 func (b *Board) Init() bool {
+	b.lastInserted = -1
 	for i := 0; i < Width; i++ {
 		b.Cols[i].Init(Height)
 	}
@@ -19,8 +20,9 @@ func (b *Board) SetLastInserted(col int) {
 	b.lastInserted = col
 }
 
-func (b *Board) Pop(col int) {
-	b.Cols[col].Pop()
+func (b *Board) Pop() {
+	b.Cols[b.lastInserted].Pop()
+	b.lastInserted = -1
 }
 
 func (b *Board) ToMatrix() [Height][Width]int {
@@ -116,6 +118,10 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 
 func (b *Board) CheckWinner() GameStatus {
 	c := b.lastInserted
+	if c == -1 {
+		return GameStatus{Winner: 0}
+	}
+
 	r := b.Cols[c].top
 
 	// Check vertical (down)
