@@ -8,9 +8,11 @@ import (
 type Board struct {
 	Cols         [Width]Stack
 	lastInserted int
+	hashValue    uint64
 }
 
 func (b *Board) Init() bool {
+	b.hashValue = 0
 	b.lastInserted = -1
 	for i := 0; i < Width; i++ {
 		b.Cols[i].Init(Height)
@@ -23,9 +25,21 @@ func (b *Board) SetLastInserted(col int) {
 	b.lastInserted = col
 }
 
+func (b *Board) CalcHash() {
+	b.hashValue = b.Hash()
+}
+
 func (b *Board) Pop() {
-	b.Cols[b.lastInserted].Pop()
+	deletedVal := b.Cols[b.lastInserted].Pop()
+	col := b.lastInserted
 	b.lastInserted = -1
+
+	colUnique := col * Width
+	top := b.Cols[col].TopIndex()
+	b.hashValue -= uint64(math.Pow(2, float64(colUnique+top+1)))
+	if deletedVal == -1 {
+		b.hashValue += uint64(math.Pow(2, float64(colUnique+top)))
+	}
 }
 
 func (b *Board) ToMatrix() [Height][Width]int {
@@ -55,6 +69,17 @@ func (b *Board) Drop(col int, player int) bool {
 
 	b.Cols[col].Push(player)
 	b.SetLastInserted(col)
+	if b.hashValue == 0 {
+		b.CalcHash()
+	}
+
+	colUnique := col * Width
+	top := b.Cols[col].TopIndex()
+	b.hashValue += uint64(math.Pow(2, float64(colUnique+top)))
+	if player == -1 {
+		b.hashValue -= uint64(math.Pow(2, float64(colUnique+top-1)))
+	}
+
 	return true
 }
 
@@ -155,16 +180,13 @@ func (b *Board) Hash() uint64 {
 	for i, col := range b.Cols {
 		var colUnique int = i * Width
 		var top int = col.TopIndex()
-		hash += uint64(math.Pow(2, float64(colUnique+top))) * uint64(1)
+		hash += uint64(math.Pow(2, float64(colUnique+top)))
 
-		for j := 0; j < Height; j++ {
-			var idx int = colUnique + j
+		for j := 0; j <= col.top; j++ {
 			var val int = col.Peek(j)
-			if val == -1 {
-				val = 0
+			if val == 1 {
+				hash += uint64(math.Pow(2, float64(colUnique+j)))
 			}
-
-			hash += uint64(math.Pow(2, float64(idx))) * uint64(val)
 		}
 	}
 

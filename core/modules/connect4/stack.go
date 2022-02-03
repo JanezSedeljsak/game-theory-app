@@ -24,9 +24,11 @@ func (s *Stack) Push(element int) {
 	s.items[s.top] = element
 }
 
-func (s *Stack) Pop() {
+func (s *Stack) Pop() int {
+	val := s.items[s.top]
 	s.items[s.top] = 0
 	s.top--
+	return val
 }
 
 func (s *Stack) Peek(i int) int {

@@ -7,6 +7,7 @@ const MinScore int8 = -100
 var ExploreOrder = [...]int8{3, 4, 2, 5, 1, 6, 0}
 
 func CalcMove(board Board) MiniMaxState {
+	board.CalcHash()
 	return newdp().iterativeDeepening(board)
 }
 
@@ -17,7 +18,7 @@ func newdp() *dp {
 func (dp *dp) iterativeDeepening(board Board) MiniMaxState {
 	best := MiniMaxState{Value: MaxScore}
 
-	for depth := 4; depth < 13; depth++ {
+	for depth := 5; depth < 15; depth++ {
 		dp.MaxDepth = depth
 		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
 		if curRes.Value < best.Value {
@@ -33,9 +34,8 @@ func (dp *dp) iterativeDeepening(board Board) MiniMaxState {
 }
 
 func (dp *dp) negaMax(board Board, depth int, color int, alpha int8, beta int8) MiniMaxState {
-	hash := board.Hash()
-	if _, ok := dp.Memo[hash]; ok {
-		return MiniMaxState{Value: dp.Memo[hash]}
+	if _, ok := dp.Memo[board.hashValue]; ok {
+		return MiniMaxState{Value: dp.Memo[board.hashValue]}
 	}
 
 	var winner int = board.CheckWinner().Winner
@@ -85,7 +85,7 @@ func (dp *dp) negaMax(board Board, depth int, color int, alpha int8, beta int8) 
 
 	res := MiniMaxState{Col: bestMove, Value: bestVal}
 	if bestVal != 0 {
-		dp.Memo[hash] = res.Value
+		dp.Memo[board.hashValue] = res.Value
 	}
 
 	return res
