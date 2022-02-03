@@ -1,23 +1,27 @@
 package connect4
 
-import (
-	"math/rand"
-)
+import "math/rand"
 
 func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	s.Lock()
 	defer s.Unlock()
 
+	if isAdvanced {
+		s.bitmap.Init()
+		if aiStart {
+			// best initial move is to drop in the center
+			s.bitmap.MakeMove(Width/2, -1)
+		}
+
+		// fmt.Println(s.bitmap.ToMatrix())
+		return s.bitmap.ToMatrix()
+	}
+
 	s.board.Init()
 	if aiStart {
-		if isAdvanced {
-			// best initial move is to drop in the center
-			s.board.Drop(Width/2, -1)
-		} else {
-			moveOptions := s.board.GetOpenSpots()
-			randCol := moveOptions[rand.Intn(len(moveOptions))]
-			s.board.Drop(randCol, -1)
-		}
+		moveOptions := s.board.GetOpenSpots()
+		randCol := moveOptions[rand.Intn(len(moveOptions))]
+		s.board.Drop(randCol, -1)
 	}
 
 	return s.board.ToMatrix()
@@ -27,17 +31,17 @@ func (s *Actions) Mutate(board [Height][Width]int, lastCol int) string {
 	s.Lock()
 	defer s.Unlock()
 
-	s.board.FromMatrix(board)
-	s.board.SetLastInserted(lastCol)
-	gs := getGameStatus(s.board)
+	//s.board.FromMatrix(board)
+	s.bitmap.MakeMove(lastCol, 1)
+	gs := getGameStatusBitmap(s.bitmap)
 	if gs.IsDone {
 		return gs.Stringify()
 	}
 
-	aiMove := CalcMove(s.board)
-	s.board.Drop(int(aiMove.Col), -1)
+	aiMove := CalcMove(s.bitmap)
+	s.bitmap.MakeMove(int(aiMove.Col), -1)
 
-	gs = getGameStatus(s.board)
+	gs = getGameStatusBitmap(s.bitmap)
 	return gs.Stringify()
 }
 
@@ -74,6 +78,10 @@ func (s *Actions) RandomMove(board [Height][Width]int, lastCol int) string {
 
 	gs = getGameStatus(s.board)
 	return gs.Stringify()
+}
+
+func getGameStatusBitmap(board BitmapBoard) GameStatus {
+	return GameStatus{board.ToMatrix(), 0, false, []Coord{}}
 }
 
 func getGameStatus(board Board) GameStatus {

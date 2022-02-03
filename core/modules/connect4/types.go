@@ -11,7 +11,8 @@ const Width int = 7
 
 type Actions struct {
 	sync.Mutex
-	board Board
+	board  Board       // used for random AI and multiplayer
+	bitmap BitmapBoard // used for negamax (main algorithm)
 }
 
 type dp struct {
