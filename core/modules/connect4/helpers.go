@@ -1,16 +1,19 @@
 package connect4
 
-func reverse(x uint64) uint64 {
-	x = ((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1)
-	x = ((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2)
-	x = ((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4)
-	x = ((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8)
+import "fmt"
 
-	return (x >> 16) | (x << 16)
-}
+func IsSymmetrical(bitmap uint64) bool {
+	for i := 1; i <= 3; i++ {
+		for j := 0; j < 7; j++ {
+			leftIdx := 21 - i*7 + j
+			rightIdx := 21 + i*7 + j
+			if ((bitmap >> leftIdx) & 1) != ((bitmap >> rightIdx) & 1) {
+				return false
+			}
+		}
+	}
 
-func getGameStatusBitmap(board BitmapBoard) GameStatus {
-	return GameStatus{board.ToMatrix(), 0, false, []Coord{}}
+	return true
 }
 
 func getGameStatus(board Board) GameStatus {
@@ -36,4 +39,14 @@ func BitmapToMatrix(bitmap uint64) [Height][Width]int {
 	}
 
 	return board
+}
+
+func PrintBitmap(bitmap uint64) {
+	matrix := BitmapToMatrix(bitmap)
+	for i := 0; i < Height; i++ {
+		for j := 0; j < Width; j++ {
+			fmt.Printf("%d ", matrix[Height-i-1][j])
+		}
+		fmt.Println()
+	}
 }

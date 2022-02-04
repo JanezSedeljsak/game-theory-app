@@ -1,6 +1,10 @@
 package connect4
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	s.Lock()
@@ -39,7 +43,11 @@ func (s *Actions) Mutate(board [Height][Width]int, lastCol int8) string {
 		return gs.Stringify()
 	}
 
+	start := time.Now()
 	aiMove := CalcMove(s.bitmap)
+	elapsed := time.Since(start)
+	fmt.Println(elapsed)
+
 	s.bitmap.MakeMove(aiMove.Col, -1)
 	s.board.Drop(int(aiMove.Col), -1)
 

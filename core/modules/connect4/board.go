@@ -1,8 +1,6 @@
 package connect4
 
-import (
-	"math"
-)
+import "math"
 
 type Board struct {
 	Cols         [Width]Stack

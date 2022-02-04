@@ -1,19 +1,18 @@
 package connect4
 
+/*
+ * How a connect4 - bitmap workshttps:
+ * github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md
+ */
+
+const BOTTOM uint64 = 0b_0000001_0000001_0000001_0000001_0000001_0000001_0000001
+
 type BitmapBoard struct {
 	Pos        uint64
 	Mask       uint64
 	lastPlayer int8
 	lastCol    int8
 }
-
-const UINT64_1 uint64 = 1
-const BOTTOM uint64 = 0b_1000000_1000000_1000000_1000000_1000000_1000000_1000000
-
-/*
- * How a connect4 - bitmap workshttps:
- * github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md
- */
 
 func (bb *BitmapBoard) Init() {
 	bb.Pos = 0
@@ -70,12 +69,6 @@ func (bb *BitmapBoard) ReverseMove() {
 	if bb.lastPlayer == 1 {
 		bb.Pos &= bb.Mask
 	}
-}
-
-func (bb *BitmapBoard) IsSymmetrical(bitmap uint64) bool {
-	var left uint64 = bitmap >> 28
-	var right uint64 = bitmap - ((bitmap >> 21) << 21)
-	return left == right
 }
 
 func (bb *BitmapBoard) Hash() uint64 {

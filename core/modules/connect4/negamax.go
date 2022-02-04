@@ -18,7 +18,7 @@ func (dp *dp) iterativeDeepening(board BitmapBoard) MiniMaxState {
 	best := MiniMaxState{Value: MaxScore}
 	var depth int8
 
-	for depth = 5; depth < 20; depth++ {
+	for depth = 5; depth < 19; depth++ {
 		dp.MaxDepth = depth
 		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
 		if curRes.Value < best.Value {
@@ -52,13 +52,10 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 	var bestMove int8
 
 	prevPos, prevMask := board.Pos, board.Mask
-	/*isSymmetrical := board.IsSymmetrical(hash)
-	if isSymmetrical {
-		fmt.Println(board.ToMatrix())
-	}*/
+	isSymmetrical := IsSymmetrical(hash)
 
 	for _, option := range ExploreOrder {
-		if !board.CanPlay(option) { //|| isSymmetrical && option > 3 {
+		if !board.CanPlay(option) || (isSymmetrical && option > 3) {
 			continue
 		}
 
