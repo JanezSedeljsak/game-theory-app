@@ -16,8 +16,9 @@ func newdp() *dp {
 
 func (dp *dp) iterativeDeepening(board BitmapBoard) MiniMaxState {
 	best := MiniMaxState{Value: MaxScore}
+	var depth int8
 
-	for depth := 5; depth < 18; depth++ {
+	for depth = 5; depth < 20; depth++ {
 		dp.MaxDepth = depth
 		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
 		if curRes.Value < best.Value {
@@ -32,34 +33,37 @@ func (dp *dp) iterativeDeepening(board BitmapBoard) MiniMaxState {
 	return best
 }
 
-func (dp *dp) negaMax(board BitmapBoard, depth int, color int, alpha int8, beta int8) MiniMaxState {
+func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, beta int8) MiniMaxState {
 	hash := board.Hash()
 	if _, ok := dp.Memo[hash]; ok {
 		return MiniMaxState{Value: dp.Memo[hash]}
 	}
 
-	var winner int = board.CheckWinner()
+	var winner int8 = board.CheckWinner()
 	if winner != 0 {
-		endEval := (50 * winner) - (depth * winner)
-		return MiniMaxState{Value: int8(endEval)}
+		var endEval int8 = (50 * winner) - (depth * winner)
+		return MiniMaxState{Value: endEval}
 	} else if depth == dp.MaxDepth {
 		return MiniMaxState{Value: 0}
 	}
 
-	var bestVal int8 = MinScore * int8(color)
+	var bestVal int8 = MinScore * color
 	var foundOption bool = false
 	var bestMove int8
 
-	prevPos := board.Pos
-	prevMask := board.Mask
+	prevPos, prevMask := board.Pos, board.Mask
+	/*isSymmetrical := board.IsSymmetrical(hash)
+	if isSymmetrical {
+		fmt.Println(board.ToMatrix())
+	}*/
 
 	for _, option := range ExploreOrder {
-		if !board.CanPlay(int(option)) {
+		if !board.CanPlay(option) { //|| isSymmetrical && option > 3 {
 			continue
 		}
 
 		foundOption = true
-		board.MakeMove(int(option), color)
+		board.MakeMove(option, color)
 		newVal := dp.negaMax(board, depth+1, -color, alpha, beta).Value
 
 		// reverse move

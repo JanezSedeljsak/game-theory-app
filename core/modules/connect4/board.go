@@ -1,7 +1,6 @@
 package connect4
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -146,11 +145,6 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 
 func (b *Board) CheckWinner() GameStatus {
 	c := b.lastInserted
-	if c == -1 {
-		fmt.Println("no prev")
-		return GameStatus{Winner: 0}
-	}
-
 	r := b.Cols[c].top
 
 	// Check vertical (down)

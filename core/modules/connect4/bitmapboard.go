@@ -3,8 +3,8 @@ package connect4
 type BitmapBoard struct {
 	Pos        uint64
 	Mask       uint64
-	lastPlayer int
-	lastCol    int
+	lastPlayer int8
+	lastCol    int8
 }
 
 const UINT64_1 uint64 = 1
@@ -22,7 +22,7 @@ func (bb *BitmapBoard) Init() {
 	bb.lastPlayer = 0
 }
 
-func (bb *BitmapBoard) GetPlayerBitmap(player int) uint64 {
+func (bb *BitmapBoard) GetPlayerBitmap(player int8) uint64 {
 	if player == 1 {
 		return bb.Pos
 	}
@@ -30,7 +30,7 @@ func (bb *BitmapBoard) GetPlayerBitmap(player int) uint64 {
 	return bb.Pos ^ bb.Mask
 }
 
-func (bb *BitmapBoard) CanPlay(col int) bool {
+func (bb *BitmapBoard) CanPlay(col int8) bool {
 	return (bb.Mask>>(col*7+5))&1 == 0
 }
 
@@ -52,7 +52,7 @@ func (bb *BitmapBoard) ToMatrix() [Height][Width]int {
 	return board
 }
 
-func (bb *BitmapBoard) MakeMove(col int, player int) {
+func (bb *BitmapBoard) MakeMove(col int8, player int8) {
 	newMask := bb.Mask | (bb.Mask + (1 << (col * 7)))
 	bb.lastPlayer = player
 	bb.lastCol = col
@@ -72,11 +72,17 @@ func (bb *BitmapBoard) ReverseMove() {
 	}
 }
 
+func (bb *BitmapBoard) IsSymmetrical(bitmap uint64) bool {
+	var left uint64 = bitmap >> 28
+	var right uint64 = bitmap - ((bitmap >> 21) << 21)
+	return left == right
+}
+
 func (bb *BitmapBoard) Hash() uint64 {
 	return bb.Pos + bb.Mask + BOTTOM
 }
 
-func (bb *BitmapBoard) CheckWinner() int {
+func (bb *BitmapBoard) CheckWinner() int8 {
 	bmap := bb.GetPlayerBitmap(bb.lastPlayer)
 
 	// horizontal
