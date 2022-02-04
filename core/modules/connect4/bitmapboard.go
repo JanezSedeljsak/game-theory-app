@@ -19,7 +19,7 @@ func (bb *BitmapBoard) Init() {
 	bb.Pos = 0
 	bb.Mask = 0
 	bb.lastCol = -1
-	bb.lastPlayer = -1
+	bb.lastPlayer = 0
 }
 
 func (bb *BitmapBoard) GetPlayerBitmap(player int) uint64 {
@@ -31,12 +31,7 @@ func (bb *BitmapBoard) GetPlayerBitmap(player int) uint64 {
 }
 
 func (bb *BitmapBoard) CanPlay(col int) bool {
-	return (bb.Mask & bb.TopMask(col)) == 0
-}
-
-func (bb *BitmapBoard) TopMask(col int) uint64 {
-	uint64Height := uint64(Height)
-	return (UINT64_1 << (uint64Height - 1)) << col * (uint64Height + 1)
+	return (bb.Mask>>(col*7+5))&1 == 0
 }
 
 func (bb *BitmapBoard) ToMatrix() [Height][Width]int {
