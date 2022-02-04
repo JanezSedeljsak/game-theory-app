@@ -25,7 +25,8 @@ func (dp *dp) iterativeDeepening(board BitmapBoard) MiniMaxState {
 			best = curRes
 		}
 
-		if best.Value < 0 {
+		// tree search has reached terminal node
+		if best.Value != 0 {
 			break
 		}
 	}
@@ -55,7 +56,7 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 	isSymmetrical := IsSymmetrical(hash)
 
 	for _, option := range ExploreOrder {
-		if !board.CanPlay(option) || (isSymmetrical && option > 3) {
+		if (isSymmetrical && option > 3) || !board.CanPlay(option) {
 			continue
 		}
 
