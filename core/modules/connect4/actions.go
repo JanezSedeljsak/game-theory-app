@@ -15,13 +15,10 @@ func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 		s.bitmap.Init()
 		if aiStart {
 			// best initial move is to drop in the center
-			s.bitmap.MakeMove(int8(Width)/2, -1)
+			s.board.Drop(Width/2, -1)
+			s.bitmap.MakeMove(int8(Width) / 2)
 		}
-
-		return s.bitmap.ToMatrix()
-	}
-
-	if aiStart {
+	} else {
 		moveOptions := s.board.GetOpenSpots()
 		randCol := moveOptions[rand.Intn(len(moveOptions))]
 		s.board.Drop(randCol, -1)
@@ -34,9 +31,8 @@ func (s *Actions) Mutate(board [Height][Width]int, column int8) string {
 	s.Lock()
 	defer s.Unlock()
 
-	s.bitmap.MakeMove(column, 1)
-	s.board.FromMatrix(s.bitmap.ToMatrix())
-	s.board.SetLastInserted(int(column))
+	s.bitmap.MakeMove(column)
+	s.board.Drop(int(column), 1)
 
 	gs := getGameStatus(s.board)
 	if gs.IsDone {
@@ -48,7 +44,7 @@ func (s *Actions) Mutate(board [Height][Width]int, column int8) string {
 	elapsed := time.Since(start)
 	fmt.Printf("Elapsed: %s, Estimation: %d\n", elapsed, aiMove.Value)
 
-	s.bitmap.MakeMove(aiMove.Col, -1)
+	s.bitmap.MakeMove(aiMove.Col)
 	s.board.Drop(int(aiMove.Col), -1)
 
 	gs = getGameStatus(s.board)

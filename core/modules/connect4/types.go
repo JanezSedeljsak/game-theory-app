@@ -11,8 +11,9 @@ const Width int = 7
 
 type Actions struct {
 	sync.Mutex
-	board  Board       // used for random AI and multiplayer
-	bitmap BitmapBoard // used for negamax (main algorithm)
+	board   Board       // used for random AI and multiplayer
+	bitmap  BitmapBoard // used for negamax (main algorithm)
+	aiStart bool
 }
 
 type dp struct {
@@ -34,7 +35,7 @@ type MiniMaxState struct {
 type MoveEval struct {
 	Col    int8
 	Board  BitmapBoard
-	Winner int8
+	Winner bool
 }
 
 type GameStatus struct {
