@@ -14,9 +14,14 @@ On the other hand connect 4 was a whole different problem, here the space comple
 
 In its current state the algorithm holds up quite well against the AI on: [coonect4.gamesolver](https://connect4.gamesolver.org).<br/>
 Improvements made to the miniMax algorithm:
-* [Negamax](https://en.wikipedia.org/wiki/Negamax)ish
+* [Negamax](https://en.wikipedia.org/wiki/Negamax)
 * [Alpha-beta pruning](https://en.wikipedia.org/wiki/Alpha–beta_pruning)
-* [Iterative deepening](https://www.chessprogramming.org/Iterative_Deepening) & [Memoization](https://en.wikipedia.org/wiki/Memoization)
+* [Memoization](https://en.wikipedia.org/wiki/Memoization) with progressive deepening
+* [Bitmap board](https://github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md)
+
+#### Possible improvements in the future
+* A good heuristic evaluation
+* Hard coded dictionary `HashMap<"Unique Bitmap", "Best move">`
 
 ![No image](https://github.com/JanezSedeljsak/game-theory-app/blob/main/docs/banner.png)
 
@@ -54,3 +59,8 @@ go run .
 ```JS
 const AUTHORS = ['Janez Sedeljsak']
 ```
+
+### Credits
+* [Optimization ideas](http://blog.gamesolver.org)
+* [Optimization ideas #2](https://towardsdatascience.com/creating-the-perfect-connect-four-ai-bot-c165115557b0)
+* [Bitmap representation](https://github.com/denkspuren/BitboardC4)
