@@ -6,19 +6,19 @@ const MinScore int8 = -100
 // Prioritize moves in the center
 var ExploreOrder = [...]int8{3, 4, 2, 5, 1, 6, 0}
 
-func CalcMove(board BitmapBoard) MiniMaxState {
-	return newdp().iterativeDeepening(board)
+func CalcMove(board BitmapBoard, maxDepth int8) MiniMaxState {
+	return newdp().iterativeDeepening(board, maxDepth)
 }
 
 func newdp() *dp {
 	return &dp{Memo: make(map[uint64]int8)}
 }
 
-func (dp *dp) iterativeDeepening(board BitmapBoard) MiniMaxState {
+func (dp *dp) iterativeDeepening(board BitmapBoard, maxDepth int8) MiniMaxState {
 	best := MiniMaxState{Value: MaxScore}
 	var depth int8
 
-	for depth = 5; depth < 19; depth++ {
+	for depth = 5; depth < maxDepth; depth++ {
 		dp.MaxDepth = depth
 		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
 		if curRes.Value < best.Value {

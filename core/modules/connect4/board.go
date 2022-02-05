@@ -141,6 +141,15 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 	return GameStatus{Winner: 0}
 }
 
+func (b *Board) CountMoves() int8 {
+	sum := 0
+	for _, col := range b.Cols {
+		sum += col.TopIndex()
+	}
+
+	return int8(sum)
+}
+
 func (b *Board) CheckWinner() GameStatus {
 	c := b.lastInserted
 	r := b.Cols[c].top

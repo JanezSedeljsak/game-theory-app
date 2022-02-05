@@ -43,8 +43,17 @@ func (s *Actions) Mutate(board [Height][Width]int, lastCol int8) string {
 		return gs.Stringify()
 	}
 
+	var count int8 = s.board.CountMoves()
+	var maxDepth int8 = 19
+
+	if count > 9 {
+		maxDepth = 25
+	} else if count > 13 {
+		maxDepth = 43 - count
+	}
+
 	start := time.Now()
-	aiMove := CalcMove(s.bitmap)
+	aiMove := CalcMove(s.bitmap, maxDepth)
 	elapsed := time.Since(start)
 	fmt.Printf("Elapsed: %s, Estimation: %d\n", elapsed, aiMove.Value)
 
