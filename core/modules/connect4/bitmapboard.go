@@ -77,29 +77,14 @@ func (bb *BitmapBoard) Hash() uint64 {
 
 func (bb *BitmapBoard) CheckWinner() int8 {
 	bmap := bb.GetPlayerBitmap(bb.lastPlayer)
+	var options = [...]int8{7, 6, 8, 1}
+	var pos uint64
 
-	// horizontal
-	var pos uint64 = bmap & (bmap >> 7)
-	if pos&(pos>>14) > 0 {
-		return bb.lastPlayer
-	}
-
-	// \ diagonal
-	pos = bmap & (bmap >> 6)
-	if pos&(pos>>12) > 0 {
-		return bb.lastPlayer
-	}
-
-	// / diagonal
-	pos = bmap & (bmap >> 8)
-	if pos&(pos>>16) > 0 {
-		return bb.lastPlayer
-	}
-
-	// vertical
-	pos = bmap & (bmap >> 1)
-	if pos&(pos>>2) > 0 {
-		return bb.lastPlayer
+	for _, dir := range options {
+		pos = bmap & (bmap >> dir)
+		if pos&(pos>>(dir*2)) > 0 {
+			return bb.lastPlayer
+		}
 	}
 
 	return 0
