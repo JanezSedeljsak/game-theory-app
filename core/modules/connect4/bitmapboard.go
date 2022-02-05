@@ -1,8 +1,8 @@
 package connect4
 
 /*
- * How a connect4 - bitmap workshttps:
- * github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md
+ * How a connect4 - bitmap works
+ * https:github.com/denkspuren/BitboardC4/blob/master/BitboardDesign.md
  */
 
 const BOTTOM uint64 = 0b_0000001_0000001_0000001_0000001_0000001_0000001_0000001
@@ -62,13 +62,6 @@ func (bb *BitmapBoard) MakeMove(col int8, player int8) {
 	}
 
 	bb.Mask = newMask
-}
-
-func (bb *BitmapBoard) ReverseMove() {
-	bb.Mask ^= (bb.Mask - (1 << (bb.lastCol * 7)))
-	if bb.lastPlayer == 1 {
-		bb.Pos &= bb.Mask
-	}
 }
 
 func (bb *BitmapBoard) Hash() uint64 {

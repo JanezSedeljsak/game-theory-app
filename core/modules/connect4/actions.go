@@ -46,7 +46,7 @@ func (s *Actions) Mutate(board [Height][Width]int, lastCol int8) string {
 	start := time.Now()
 	aiMove := CalcMove(s.bitmap)
 	elapsed := time.Since(start)
-	fmt.Println(elapsed)
+	fmt.Printf("Elapsed: %s, Estimation: %d\n", elapsed, aiMove.Value)
 
 	s.bitmap.MakeMove(aiMove.Col, -1)
 	s.board.Drop(int(aiMove.Col), -1)
