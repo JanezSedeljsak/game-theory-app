@@ -71,7 +71,7 @@ func (bb *BitmapBoard) CheckWinner() bool {
 }
 
 /*
- @result => tuple (code - int, all valid moves - array)
+ @result => tuple (code - int, all moves - [7]array, size - amount of valid moves)
  @code => 0: ok, 1: empty, 2: forced move
 */
 func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, [7]MoveEval, int) {
@@ -88,11 +88,12 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, [7]MoveEval, int) {
 		tmpBoard := BitmapBoard{Pos: bb.Pos, Mask: bb.Mask}
 		tmpBoard.MakeMove(option)
 		winner := tmpBoard.CheckWinner()
-		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}
 		if winner {
 			// forced move
 			return 2, [7]MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}, 0
 		}
+
+		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}
 		validCount++
 	}
 
