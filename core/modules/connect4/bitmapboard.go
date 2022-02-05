@@ -74,10 +74,10 @@ func (bb *BitmapBoard) CheckWinner() bool {
  @result => tuple (code - int, all valid moves - array)
  @code => 0: ok, 1: empty, 2: forced move
 */
-func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, []MoveEval) {
+func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, [7]MoveEval, int) {
 	var moves [7]MoveEval
+	var validCount int = 0
 	isSymmetrical := IsSymmetrical(hash)
-	validCount := 0
 
 	// fill table with valid moves
 	for _, option := range ExploreOrder {
@@ -91,31 +91,14 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, []MoveEval) {
 		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}
 		if winner {
 			// forced move
-			return 2, []MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}
+			return 2, [7]MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}, 0
 		}
 		validCount++
 	}
 
 	if validCount == 0 {
-		return 1, nil
+		return 1, [7]MoveEval{}, 0
 	}
 
-	// sort moves based on value with insertion sort
-	var sortedMoves = make([]MoveEval, validCount)
-	sortedMoves[0] = moves[0]
-
-	for i := 1; i < validCount; i++ {
-		sortedMoves[i] = moves[i]
-		/*j := i
-
-		for j > 0 {
-			if !moves[j-1].Winner && moves[j].Winner {
-				sortedMoves[j-1], sortedMoves[j] = sortedMoves[j], sortedMoves[j-1]
-			}
-
-			j--
-		}*/
-	}
-
-	return 0, sortedMoves
+	return 0, moves, validCount
 }

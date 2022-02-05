@@ -41,9 +41,9 @@ func (s *Actions) Mutate(board [Height][Width]int, column int8) string {
 
 	// calculate depth search
 	movesMade := s.board.CountMoves()
-	var depth int8 = 18
-	if 6 <= movesMade && movesMade < 8 {
-		depth = 20
+	var depth int8 = 19
+	if 6 <= movesMade && movesMade <= 8 {
+		depth = 22
 	} else if 8 <= movesMade && movesMade < 14 {
 		depth = 24
 	} else if movesMade >= 14 {

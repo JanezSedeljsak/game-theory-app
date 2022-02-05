@@ -29,7 +29,7 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winn
 	var bestVal int8 = MinScore
 	var bestMove int8
 
-	code, moves := board.SortedMoves(hash)
+	code, moves, size := board.SortedMoves(hash)
 	switch code {
 	case 1:
 		return 0, 0
@@ -37,7 +37,7 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winn
 		return moves[0].Col, 49 - depth
 	}
 
-	for _, move := range moves {
+	for index, move := range moves {
 		_, newVal := dp.negaMax(move.Board, depth+1, -beta, -alpha, move.Winner)
 		newVal *= -1
 
@@ -52,6 +52,10 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winn
 
 		if bestVal > alpha {
 			alpha = newVal
+		}
+
+		if index+1 == size {
+			break
 		}
 	}
 
