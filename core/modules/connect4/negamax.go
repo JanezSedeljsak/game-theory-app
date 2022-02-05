@@ -6,65 +6,58 @@ const MinScore int8 = -100
 // Prioritize moves in the center
 var ExploreOrder = [Width]int8{3, 4, 2, 5, 1, 6, 0}
 
-func CalcMove(board BitmapBoard, maxDepth int8) MiniMaxState {
-	return newdp(maxDepth).negaMax(board, 0, -1, MinScore, MaxScore, false)
+func CalcMove(board BitmapBoard, maxDepth int8) (int8, int8) {
+	return newdp(maxDepth).negaMax(board, 0, MinScore, MaxScore, false)
 }
 
 func newdp(maxDepth int8) *dp {
 	return &dp{Memo: make(map[uint64]int8), MaxDepth: maxDepth}
 }
 
-func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, beta int8, winner bool) MiniMaxState {
+func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winner bool) (int8, int8) {
 	if winner {
-		var weight int8 = -1
-		if depth%2 == 0 {
-			weight = 1
-		}
-		var endEval int8 = (50 * weight) - (depth * weight)
-		return MiniMaxState{Value: endEval}
+		return 0, depth - 50
 	} else if depth == dp.MaxDepth {
-		return MiniMaxState{Value: 0}
+		return 0, 0
 	}
 
 	hash := board.Hash()
 	if _, ok := dp.Memo[hash]; ok {
-		return MiniMaxState{Value: dp.Memo[hash]}
+		return 0, dp.Memo[hash]
 	}
 
-	var bestVal int8 = MinScore * color
+	var bestVal int8 = MinScore
 	var bestMove int8
 
-	moves := board.SortedMoves(hash)
-	if moves == nil {
-		return MiniMaxState{Value: 0}
+	code, moves := board.SortedMoves(hash)
+	switch code {
+	case 1:
+		return 0, 0
+	case 2:
+		return moves[0].Col, 49 - depth
 	}
 
 	for _, move := range moves {
-		newVal := dp.negaMax(move.Board, depth+1, -color, alpha, beta, move.Winner).Value
+		_, newVal := dp.negaMax(move.Board, depth+1, -beta, -alpha, move.Winner)
+		newVal *= -1
 
-		if color == 1 && newVal > bestVal {
+		if newVal > bestVal {
 			bestVal = newVal
 			bestMove = move.Col
-			if bestVal > alpha {
-				alpha = newVal
-			}
-		} else if color == -1 && newVal < bestVal {
-			bestVal = newVal
-			bestMove = move.Col
-			if bestVal < beta {
-				beta = newVal
-			}
 		}
 
-		if alpha >= beta {
+		if newVal >= beta {
 			break
 		}
+
+		if bestVal > alpha {
+			alpha = newVal
+		}
 	}
 
-	res := MiniMaxState{Col: bestMove, Value: bestVal}
 	if bestVal != 0 {
-		dp.Memo[hash] = res.Value
+		dp.Memo[hash] = bestVal
 	}
 
-	return res
+	return bestMove, bestVal
 }

@@ -70,7 +70,11 @@ func (bb *BitmapBoard) CheckWinner() bool {
 	return false
 }
 
-func (bb *BitmapBoard) SortedMoves(hash uint64) []MoveEval {
+/*
+ @result => tuple (code - int, all valid moves - array)
+ @code => 0: ok, 1: empty, 2: forced move
+*/
+func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, []MoveEval) {
 	var moves [7]MoveEval
 	isSymmetrical := IsSymmetrical(hash)
 	validCount := 0
@@ -87,13 +91,13 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) []MoveEval {
 		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}
 		if winner {
 			// forced move
-			return []MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}
+			return 2, []MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}
 		}
 		validCount++
 	}
 
 	if validCount == 0 {
-		return nil
+		return 1, nil
 	}
 
 	// sort moves based on value with insertion sort
@@ -113,5 +117,5 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) []MoveEval {
 		}*/
 	}
 
-	return sortedMoves
+	return 0, sortedMoves
 }

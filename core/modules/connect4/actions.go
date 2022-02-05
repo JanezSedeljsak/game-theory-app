@@ -39,13 +39,24 @@ func (s *Actions) Mutate(board [Height][Width]int, column int8) string {
 		return gs.Stringify()
 	}
 
-	start := time.Now()
-	aiMove := CalcMove(s.bitmap, 15)
-	elapsed := time.Since(start)
-	fmt.Printf("Elapsed: %s, Estimation: %d\n", elapsed, aiMove.Value)
+	// calculate depth search
+	movesMade := s.board.CountMoves()
+	var depth int8 = 18
+	if 6 <= movesMade && movesMade < 8 {
+		depth = 20
+	} else if 8 <= movesMade && movesMade < 14 {
+		depth = 24
+	} else if movesMade >= 14 {
+		depth = 42 - movesMade
+	}
 
-	s.bitmap.MakeMove(aiMove.Col)
-	s.board.Drop(int(aiMove.Col), -1)
+	start := time.Now()
+	column, score := CalcMove(s.bitmap, depth)
+	elapsed := time.Since(start)
+	fmt.Printf("Moves made: %d, Elapsed: %s, Estimation: %d\n", movesMade, elapsed, score)
+
+	s.bitmap.MakeMove(column)
+	s.board.Drop(int(column), -1)
 
 	gs = getGameStatus(s.board)
 	return gs.Stringify()
