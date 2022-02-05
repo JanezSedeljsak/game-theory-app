@@ -30,30 +30,21 @@ func (s *Actions) Init(aiStart bool, isAdvanced bool) [Height][Width]int {
 	return s.board.ToMatrix()
 }
 
-func (s *Actions) Mutate(board [Height][Width]int, lastCol int8) string {
+func (s *Actions) Mutate(board [Height][Width]int, column int8) string {
 	s.Lock()
 	defer s.Unlock()
 
-	s.bitmap.MakeMove(lastCol, 1)
+	s.bitmap.MakeMove(column, 1)
 	s.board.FromMatrix(s.bitmap.ToMatrix())
-	s.board.SetLastInserted(int(s.bitmap.lastCol))
+	s.board.SetLastInserted(int(column))
 
 	gs := getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()
 	}
 
-	var count int8 = s.board.CountMoves()
-	var maxDepth int8 = 19
-
-	if count > 9 {
-		maxDepth = 25
-	} else if count > 13 {
-		maxDepth = 43 - count
-	}
-
 	start := time.Now()
-	aiMove := CalcMove(s.bitmap, maxDepth)
+	aiMove := CalcMove(s.bitmap, 15)
 	elapsed := time.Since(start)
 	fmt.Printf("Elapsed: %s, Estimation: %d\n", elapsed, aiMove.Value)
 
@@ -64,18 +55,18 @@ func (s *Actions) Mutate(board [Height][Width]int, lastCol int8) string {
 	return gs.Stringify()
 }
 
-func (s *Actions) Multiplayer(board [Height][Width]int, lastCol int) string {
+func (s *Actions) Multiplayer(board [Height][Width]int, column int) string {
 	s.Lock()
 	defer s.Unlock()
 
 	s.board.FromMatrix(board)
-	s.board.SetLastInserted(lastCol)
+	s.board.SetLastInserted(column)
 
 	gs := getGameStatus(s.board)
 	return gs.Stringify()
 }
 
-func (s *Actions) RandomMove(board [Height][Width]int, lastCol int) string {
+func (s *Actions) RandomMove(board [Height][Width]int, column int) string {
 	s.Lock()
 	defer s.Unlock()
 
@@ -85,7 +76,7 @@ func (s *Actions) RandomMove(board [Height][Width]int, lastCol int) string {
 	}
 
 	s.board.FromMatrix(board)
-	s.board.SetLastInserted(lastCol)
+	s.board.SetLastInserted(column)
 	gs = getGameStatus(s.board)
 	if gs.IsDone {
 		return gs.Stringify()

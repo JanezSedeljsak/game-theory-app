@@ -8,21 +8,17 @@ package connect4
 const BOTTOM uint64 = 0b_0000001_0000001_0000001_0000001_0000001_0000001_0000001
 
 type BitmapBoard struct {
-	Pos        uint64
-	Mask       uint64
-	lastPlayer int8
-	lastCol    int8
+	Pos  uint64
+	Mask uint64
 }
 
 func (bb *BitmapBoard) Init() {
 	bb.Pos = 0
 	bb.Mask = 0
-	bb.lastCol = -1
-	bb.lastPlayer = 0
 }
 
-func (bb *BitmapBoard) GetPlayerBitmap(player int8) uint64 {
-	if player == 1 {
+func (bb *BitmapBoard) GetPlayerBitmap(color int8) uint64 {
+	if color == 1 {
 		return bb.Pos
 	}
 
@@ -51,12 +47,10 @@ func (bb *BitmapBoard) ToMatrix() [Height][Width]int {
 	return board
 }
 
-func (bb *BitmapBoard) MakeMove(col int8, player int8) {
+func (bb *BitmapBoard) MakeMove(col int8, color int8) {
 	newMask := bb.Mask | (bb.Mask + (1 << (col * 7)))
-	bb.lastPlayer = player
-	bb.lastCol = col
 
-	if player == 1 {
+	if color == 1 {
 		opponent := bb.Mask ^ bb.Pos
 		bb.Pos = newMask ^ opponent
 	}
@@ -68,17 +62,58 @@ func (bb *BitmapBoard) Hash() uint64 {
 	return bb.Pos + bb.Mask + BOTTOM
 }
 
-func (bb *BitmapBoard) CheckWinner() int8 {
-	bmap := bb.GetPlayerBitmap(bb.lastPlayer)
-	var options = [...]int8{7, 6, 8, 1}
+func (bb *BitmapBoard) CheckWinner(color int8) int8 {
+	bmap := bb.GetPlayerBitmap(color)
+	var options = [...]int8{1, 6, 8, 7}
 	var pos uint64
 
 	for _, dir := range options {
 		pos = bmap & (bmap >> dir)
 		if pos&(pos>>(dir*2)) > 0 {
-			return bb.lastPlayer
+			return color
 		}
 	}
 
 	return 0
+}
+
+func (bb *BitmapBoard) SortedMoves(hash uint64, color int8) []MoveEval {
+	var moves [7]MoveEval
+	isSymmetrical := IsSymmetrical(hash)
+	validCount := 0
+
+	for _, option := range ExploreOrder {
+		if (isSymmetrical && option > 3) || !bb.CanPlay(option) {
+			continue
+		}
+
+		tmpBoard := BitmapBoard{Pos: bb.Pos, Mask: bb.Mask}
+		tmpBoard.MakeMove(option, color)
+		winner := tmpBoard.CheckWinner(color)
+		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}
+		validCount++
+	}
+
+	if validCount == 0 {
+		return nil
+	}
+
+	// sort moves based on value with insertion sort (DESC -> 1, ASC -> -1)
+	var sortedMoves = make([]MoveEval, validCount)
+	sortedMoves[0] = moves[0]
+
+	for i := 1; i < validCount; i++ {
+		sortedMoves[i] = moves[i]
+		j := i
+
+		for j > 0 {
+			if moves[j-1].Winner*color < moves[j].Winner*color {
+				sortedMoves[j-1], sortedMoves[j] = sortedMoves[j], sortedMoves[j-1]
+			}
+
+			j--
+		}
+	}
+
+	return sortedMoves
 }

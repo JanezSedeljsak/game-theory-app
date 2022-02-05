@@ -31,6 +31,12 @@ type MiniMaxState struct {
 	Value int8
 }
 
+type MoveEval struct {
+	Col    int8
+	Board  BitmapBoard
+	Winner int8
+}
+
 type GameStatus struct {
 	Board  [6][7]int `json:"board"`
 	Winner int       `json:"winner"`

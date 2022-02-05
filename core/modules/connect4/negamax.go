@@ -7,40 +7,19 @@ const MinScore int8 = -100
 var ExploreOrder = [...]int8{3, 4, 2, 5, 1, 6, 0}
 
 func CalcMove(board BitmapBoard, maxDepth int8) MiniMaxState {
-	return newdp().iterativeDeepening(board, maxDepth)
+	return newdp(maxDepth).negaMax(board, 0, -1, MinScore, MaxScore, 0)
 }
 
-func newdp() *dp {
-	return &dp{Memo: make(map[uint64]int8)}
+func newdp(maxDepth int8) *dp {
+	return &dp{Memo: make(map[uint64]int8), MaxDepth: maxDepth}
 }
 
-func (dp *dp) iterativeDeepening(board BitmapBoard, maxDepth int8) MiniMaxState {
-	best := MiniMaxState{Value: MaxScore}
-	var depth int8
-
-	for depth = 5; depth < maxDepth; depth++ {
-		dp.MaxDepth = depth
-		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
-		if curRes.Value < best.Value {
-			best = curRes
-		}
-
-		// tree search has reached terminal node
-		if best.Value != 0 {
-			break
-		}
-	}
-
-	return best
-}
-
-func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, beta int8) MiniMaxState {
+func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, beta int8, winner int8) MiniMaxState {
 	hash := board.Hash()
 	if _, ok := dp.Memo[hash]; ok {
 		return MiniMaxState{Value: dp.Memo[hash]}
 	}
 
-	var winner int8 = board.CheckWinner()
 	if winner != 0 {
 		var endEval int8 = (50 * winner) - (depth * winner)
 		return MiniMaxState{Value: endEval}
@@ -49,34 +28,25 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 	}
 
 	var bestVal int8 = MinScore * color
-	var foundOption bool = false
 	var bestMove int8
 
-	prevPos, prevMask := board.Pos, board.Mask
-	isSymmetrical := IsSymmetrical(hash)
+	moves := board.SortedMoves(hash, color)
+	if moves == nil {
+		return MiniMaxState{Value: 0}
+	}
 
-	for _, option := range ExploreOrder {
-		if (isSymmetrical && option > 3) || !board.CanPlay(option) {
-			continue
-		}
-
-		foundOption = true
-		board.MakeMove(option, color)
-		newVal := dp.negaMax(board, depth+1, -color, alpha, beta).Value
-
-		// reverse move
-		board.Mask = prevMask
-		board.Pos = prevPos
+	for _, move := range moves {
+		newVal := dp.negaMax(move.Board, depth+1, -color, alpha, beta, move.Winner).Value
 
 		if color == 1 && newVal > bestVal {
 			bestVal = newVal
-			bestMove = option
+			bestMove = move.Col
 			if bestVal > alpha {
 				alpha = newVal
 			}
 		} else if color == -1 && newVal < bestVal {
 			bestVal = newVal
-			bestMove = option
+			bestMove = move.Col
 			if bestVal < beta {
 				beta = newVal
 			}
@@ -85,10 +55,6 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 		if alpha >= beta {
 			break
 		}
-	}
-
-	if !foundOption {
-		return MiniMaxState{Value: 0}
 	}
 
 	res := MiniMaxState{Col: bestMove, Value: bestVal}
