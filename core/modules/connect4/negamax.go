@@ -16,9 +16,9 @@ func newdp(maxDepth int8) *dp {
 
 func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, beta int8, winner bool) MiniMaxState {
 	if winner {
-		var weight int8 = 1
+		var weight int8 = -1
 		if depth%2 == 0 {
-			weight = -1
+			weight = 1
 		}
 		var endEval int8 = (50 * weight) - (depth * weight)
 		return MiniMaxState{Value: endEval}

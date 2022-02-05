@@ -48,8 +48,8 @@ func (bb *BitmapBoard) ToMatrix(weight int) [Height][Width]int {
 }
 
 func (bb *BitmapBoard) MakeMove(col int8) {
-	bb.Pos ^= bb.Mask
 	bb.Mask |= bb.Mask + (1 << (col * 7))
+	bb.Pos ^= bb.Mask
 }
 
 func (bb *BitmapBoard) Hash() uint64 {
@@ -85,6 +85,10 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) []MoveEval {
 		tmpBoard.MakeMove(option)
 		winner := tmpBoard.CheckWinner()
 		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}
+		if winner {
+			// forced move
+			return []MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}
+		}
 		validCount++
 	}
 
@@ -92,13 +96,13 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) []MoveEval {
 		return nil
 	}
 
-	// sort moves based on value with insertion sort (DESC -> 1, ASC -> -1)
+	// sort moves based on value with insertion sort
 	var sortedMoves = make([]MoveEval, validCount)
 	sortedMoves[0] = moves[0]
 
 	for i := 1; i < validCount; i++ {
 		sortedMoves[i] = moves[i]
-		j := i
+		/*j := i
 
 		for j > 0 {
 			if !moves[j-1].Winner && moves[j].Winner {
@@ -106,7 +110,7 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) []MoveEval {
 			}
 
 			j--
-		}
+		}*/
 	}
 
 	return sortedMoves
