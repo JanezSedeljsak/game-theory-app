@@ -77,30 +77,54 @@ func (bb *BitmapBoard) Hash() uint64 {
 
 func (bb *BitmapBoard) CheckWinner() int8 {
 	bmap := bb.GetPlayerBitmap(bb.lastPlayer)
+	var options = [...]int8{7, 6, 8, 1}
+	var pos uint64
 
-	// horizontal
-	var pos uint64 = bmap & (bmap >> 7)
-	if pos&(pos>>14) > 0 {
-		return bb.lastPlayer
-	}
-
-	// \ diagonal
-	pos = bmap & (bmap >> 6)
-	if pos&(pos>>12) > 0 {
-		return bb.lastPlayer
-	}
-
-	// / diagonal
-	pos = bmap & (bmap >> 8)
-	if pos&(pos>>16) > 0 {
-		return bb.lastPlayer
-	}
-
-	// vertical
-	pos = bmap & (bmap >> 1)
-	if pos&(pos>>2) > 0 {
-		return bb.lastPlayer
+	for _, dir := range options {
+		pos = bmap & (bmap >> dir)
+		if pos&(pos>>(dir*2)) > 0 {
+			return bb.lastPlayer
+		}
 	}
 
 	return 0
+}
+
+func (bb *BitmapBoard) HeuristicEvaluation() int8 {
+	player2 := bb.Pos ^ bb.Mask
+	player2Options := ^bb.Pos
+	player1Options := ^player2
+
+	player1Wins := CountWinnablePositions(player1Options)
+	player2Wins := CountWinnablePositions(player2Options)
+
+	var hScore int8 = 0
+	for i := 0; i < 4; i++ {
+		hScore += PopulationCount(player1Wins[i]) - PopulationCount(player2Wins[i])
+	}
+
+	return hScore
+}
+
+func CountWinnablePositions(bmap uint64) [4]uint64 {
+	var options = [...]int8{7, 6, 8, 1}
+	var pos uint64
+	var countDir [4]uint64
+
+	for idx, dir := range options {
+		pos = bmap & (bmap >> dir)
+		countDir[idx] = pos & (pos >> (dir * 2))
+	}
+
+	return countDir
+}
+
+// population count -> count 1s in binary representation of a bitmap
+func PopulationCount(bmap uint64) int8 {
+	var count int8
+	for count = 0; bmap > 0; count++ {
+		bmap &= bmap - 1
+	}
+
+	return count
 }
