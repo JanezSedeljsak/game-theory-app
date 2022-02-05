@@ -7,6 +7,16 @@ package connect4
 
 const BOTTOM uint64 = 0b_0000001_0000001_0000001_0000001_0000001_0000001_0000001
 
+// each cell indicates how many winning positions can be made with that specific cell
+var EvaluationTable = [Height][Width]int8{
+	{3, 4, 5, 7, 5, 4, 3},
+	{4, 6, 8, 10, 8, 6, 4},
+	{5, 8, 11, 13, 11, 8, 5},
+	{5, 8, 11, 13, 11, 8, 5},
+	{4, 6, 8, 10, 8, 6, 4},
+	{3, 4, 5, 7, 5, 4, 3},
+}
+
 type BitmapBoard struct {
 	Pos        uint64
 	Mask       uint64
@@ -27,6 +37,25 @@ func (bb *BitmapBoard) GetPlayerBitmap(player int8) uint64 {
 	}
 
 	return bb.Pos ^ bb.Mask
+}
+
+func (bb *BitmapBoard) Evaluate() int8 {
+	opponent := bb.GetPlayerBitmap(-1)
+	sum := 0
+
+	for i := 0; i < Height; i++ {
+		for j := 0; j < Width; j++ {
+			idx := i*Width + j
+
+			if (bb.Pos>>idx)&1 == 1 {
+				sum += int(EvaluationTable[i][j])
+			} else if (opponent>>idx)&1 == 1 {
+				sum -= int(EvaluationTable[i][j])
+			}
+		}
+	}
+
+	return int8(sum / 3)
 }
 
 func (bb *BitmapBoard) CanPlay(col int8) bool {

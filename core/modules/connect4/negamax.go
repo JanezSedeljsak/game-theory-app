@@ -18,15 +18,14 @@ func (dp *dp) iterativeDeepening(board BitmapBoard) MiniMaxState {
 	best := MiniMaxState{Value: MaxScore}
 	var depth int8
 
-	for depth = 5; depth < 19; depth++ {
+	for depth = 5; depth < 16; depth++ {
 		dp.MaxDepth = depth
 		curRes := dp.negaMax(board, 0, -1, MinScore, MaxScore)
 		if curRes.Value < best.Value {
 			best = curRes
 		}
 
-		// tree search has reached terminal node
-		if best.Value != 0 {
+		if best.Value <= -50 || best.Value >= 50 {
 			break
 		}
 	}
@@ -42,10 +41,11 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 
 	var winner int8 = board.CheckWinner()
 	if winner != 0 {
-		var endEval int8 = (50 * winner) - (depth * winner)
+		var endEval int8 = (100 * winner) - (depth * winner)
 		return MiniMaxState{Value: endEval}
 	} else if depth == dp.MaxDepth {
-		return MiniMaxState{Value: 0}
+		hScore := board.Evaluate()
+		return MiniMaxState{Value: hScore}
 	}
 
 	var bestVal int8 = MinScore * color
@@ -82,7 +82,7 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 			}
 		}
 
-		if alpha >= beta {
+		if alpha > beta {
 			break
 		}
 	}
@@ -92,7 +92,7 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, color int8, alpha int8, bet
 	}
 
 	res := MiniMaxState{Col: bestMove, Value: bestVal}
-	if bestVal != 0 {
+	if bestVal <= -50 || bestVal >= 50 {
 		dp.Memo[hash] = res.Value
 	}
 
