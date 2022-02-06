@@ -18,11 +18,7 @@ func (bb *BitmapBoard) Init() {
 }
 
 func (bb *BitmapBoard) GetPlayerBitmap(color int8) uint64 {
-	if color == 1 {
-		return bb.Pos
-	}
-
-	return bb.Pos ^ bb.Mask
+	return Ternary(color == 1, bb.Pos, bb.Pos^bb.Mask).(uint64)
 }
 
 func (bb *BitmapBoard) CanPlay(col int8) bool {

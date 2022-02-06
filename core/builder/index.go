@@ -32,6 +32,7 @@ func RegisterActions(args []string, ln net.Listener) lorca.UI {
 	ui.Bind("cf_mutateAI", cf.Mutate)
 	ui.Bind("cf_mutateRand", cf.RandomMove)
 	ui.Bind("cf_multiplayer", cf.Multiplayer)
+	ui.Bind("cf_prevMove", cf.PrevMove)
 
 	ui.Load(fmt.Sprintf("http://%s/app/public", ln.Addr()))
 	return ui

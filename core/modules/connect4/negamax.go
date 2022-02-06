@@ -6,8 +6,9 @@ const MinScore int8 = -100
 // Prioritize moves in the center
 var ExploreOrder = [Width]int8{3, 4, 2, 5, 1, 6, 0}
 
-func CalcMove(board BitmapBoard, maxDepth int8) (int8, int8) {
-	return newdp(maxDepth).negaMax(board, 0, MinScore, MaxScore, false)
+func CalcMove(board Board, maxDepth int8) (int8, int8) {
+	bmap := board.ToBitmap()
+	return newdp(maxDepth).negaMax(bmap, 0, MinScore, MaxScore, false)
 }
 
 func newdp(maxDepth int8) *dp {

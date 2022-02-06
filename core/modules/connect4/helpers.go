@@ -25,7 +25,7 @@ func getGameStatus(board Board, message string) GameStatus {
 	var gs GameStatus = board.CheckWinner()
 	var isDone bool = isDraw || gs.Winner != 0
 
-	return GameStatus{board.ToMatrix(), gs.Winner, isDone, gs.Coords, message}
+	return GameStatus{board.ToMatrix(), gs.Winner, isDone, gs.Coords, message, false}
 }
 
 func BitmapToMatrix(bitmap uint64) [Height][Width]int {
@@ -66,11 +66,20 @@ func Ternary(condition bool, str1 interface{}, str2 interface{}) interface{} {
 
 func GetInfoMessage(score int8, elapsed time.Duration, movesMade int8) string {
 	player := Ternary(score > 0, "AI", "You")
-	fmt.Println(score)
 	winDiff := 49 - math.Abs(float64(score))
 
 	estimationMessage := Ternary(score != 0, fmt.Sprintf("%s can win in %.0f move/s", player, winDiff), "/")
 	message := fmt.Sprintf("Moves made: %d, Elapsed: %s, Estimation: %s", movesMade+1, elapsed, estimationMessage)
 	fmt.Println(message)
 	return message
+}
+
+func newIntStack(size int) *Stack {
+	stack := Stack{}
+	stack.Init(size)
+	for i := 0; i < size; i++ {
+		stack.items[i] = 0
+	}
+
+	return &stack
 }

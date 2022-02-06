@@ -83,3 +83,9 @@ export async function evalGameStatus(coreResponse, toasts, game) {
 
   return response;
 }
+
+export async function histroyAction(prevMoveFunc) {
+  const parsedResponse = JSON.parse(await prevMoveFunc());
+  const response = [parsedResponse.board, new Set(), !parsedResponse.empty];
+  return response
+}

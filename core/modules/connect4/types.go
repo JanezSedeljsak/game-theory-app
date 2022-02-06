@@ -11,8 +11,8 @@ const Width int = 7
 
 type Actions struct {
 	sync.Mutex
-	board  Board       // used for random AI and multiplayer
-	bitmap BitmapBoard // used for negamax (main algorithm)
+	board   Board
+	History Stack
 }
 
 type dp struct {
@@ -37,6 +37,7 @@ type GameStatus struct {
 	IsDone bool      `json:"isdone"`
 	Coords []Coord   `json:"coords"`
 	Info   string    `json:"info"`
+	Empty  bool      `json:"empty"`
 }
 
 func (gs *GameStatus) Stringify() string {

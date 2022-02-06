@@ -1,18 +1,14 @@
 package connect4
 
-import "math"
-
 type Board struct {
 	Cols         [Width]Stack
 	lastInserted int
-	hashValue    uint64
 }
 
 func (b *Board) Init() bool {
-	b.hashValue = 0
 	b.lastInserted = -1
 	for i := 0; i < Width; i++ {
-		b.Cols[i].Init(Height)
+		b.Cols[i] = *newIntStack(Height)
 	}
 
 	return true
@@ -22,37 +18,41 @@ func (b *Board) SetLastInserted(col int) {
 	b.lastInserted = col
 }
 
-func (b *Board) CalcHash() {
-	b.hashValue = b.Hash()
-}
-
-func (b *Board) Pop() {
-	deletedVal := b.Cols[b.lastInserted].Pop()
-	col := b.lastInserted
-	b.lastInserted = -1
-
-	colUnique := col * Width
-	top := b.Cols[col].TopIndex()
-	b.hashValue -= uint64(math.Pow(2, float64(colUnique+top+1)))
-	if deletedVal == -1 {
-		b.hashValue += uint64(math.Pow(2, float64(colUnique+top)))
-	}
-}
-
 func (b *Board) ToMatrix() [Height][Width]int {
 	var board [Height][Width]int
 	for i, col := range b.Cols {
 		for j := 0; j < Height; j++ {
-			board[j][i] = col.Peek(j)
+			board[j][i] = col.Peek(j).(int)
 		}
 	}
 
 	return board
 }
 
+func (b *Board) ToBitmap() BitmapBoard {
+	var bmap BitmapBoard
+	bmap.Init()
+
+	for i, col := range b.Cols {
+		for j := 0; j < col.Count(); j++ {
+			cell := col.Peek(j).(int)
+			idx := i*7 + j
+
+			if cell != 0 {
+				bmap.Mask |= 1 << idx
+				if cell == 1 {
+					bmap.Pos |= 1 << idx
+				}
+			}
+		}
+	}
+
+	return bmap
+}
+
 func (b *Board) FromMatrix(board [Height][Width]int) {
 	for j := 0; j < Width; j++ {
-		b.Cols[j].Init(Height)
+		b.Cols[j] = *newIntStack(Height)
 		for i := 0; i < Height && board[i][j] != 0; i++ {
 			b.Cols[j].Push(board[i][j])
 		}
@@ -66,17 +66,6 @@ func (b *Board) Drop(col int, player int) bool {
 
 	b.Cols[col].Push(player)
 	b.SetLastInserted(col)
-	if b.hashValue == 0 {
-		b.CalcHash()
-	}
-
-	colUnique := col * Width
-	top := b.Cols[col].TopIndex()
-	b.hashValue += uint64(math.Pow(2, float64(colUnique+top)))
-	if player == -1 {
-		b.hashValue -= uint64(math.Pow(2, float64(colUnique+top-1)))
-	}
-
 	return true
 }
 
@@ -135,7 +124,7 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 	}
 
 	if len(winningLine) == 4 {
-		return GameStatus{Winner: b.Cols[c].Peek(r), Coords: winningLine}
+		return GameStatus{Winner: b.Cols[c].Peek(r).(int), Coords: winningLine}
 	}
 
 	return GameStatus{Winner: 0}
@@ -144,7 +133,7 @@ func (b *Board) checkDirection(r int, c int, dr int, dc int) GameStatus {
 func (b *Board) CountMoves() int8 {
 	sum := 0
 	for _, col := range b.Cols {
-		sum += col.TopIndex()
+		sum += col.Count()
 	}
 
 	return int8(sum)
@@ -156,7 +145,7 @@ func (b *Board) CheckWinner() GameStatus {
 
 	// Check vertical (down)
 	if r > 2 && b.cmp(r, c, r-1, c) && b.cmp(r, c, r-2, c) && b.cmp(r, c, r-3, c) {
-		return GameStatus{Winner: b.Cols[c].Peek(r), Coords: []Coord{{r, c}, {r - 1, c}, {r - 2, c}, {r - 3, c}}}
+		return GameStatus{Winner: b.Cols[c].Peek(r).(int), Coords: []Coord{{r, c}, {r - 1, c}, {r - 2, c}, {r - 3, c}}}
 	}
 
 	// Check left diagonal
@@ -173,23 +162,4 @@ func (b *Board) CheckWinner() GameStatus {
 
 	// Check horizontal
 	return b.checkDirection(r, c, 0, -1)
-}
-
-// Generate hash from binary representation of board [2^49] options
-func (b *Board) Hash() uint64 {
-	var hash uint64
-	for i, col := range b.Cols {
-		var colUnique int = i * Width
-		var top int = col.TopIndex()
-		hash += uint64(math.Pow(2, float64(colUnique+top)))
-
-		for j := 0; j <= col.top; j++ {
-			var val int = col.Peek(j)
-			if val == 1 {
-				hash += uint64(math.Pow(2, float64(colUnique+j)))
-			}
-		}
-	}
-
-	return hash
 }
