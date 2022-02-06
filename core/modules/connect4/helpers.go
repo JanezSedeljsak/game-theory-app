@@ -1,6 +1,10 @@
 package connect4
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"time"
+)
 
 func IsSymmetrical(bitmap uint64) bool {
 	for i := 1; i <= 3; i++ {
@@ -16,12 +20,12 @@ func IsSymmetrical(bitmap uint64) bool {
 	return true
 }
 
-func getGameStatus(board Board) GameStatus {
+func getGameStatus(board Board, message string) GameStatus {
 	var isDraw bool = board.IsDone()
 	var gs GameStatus = board.CheckWinner()
 	var isDone bool = isDraw || gs.Winner != 0
 
-	return GameStatus{board.ToMatrix(), gs.Winner, isDone, gs.Coords}
+	return GameStatus{board.ToMatrix(), gs.Winner, isDone, gs.Coords, message}
 }
 
 func BitmapToMatrix(bitmap uint64) [Height][Width]int {
@@ -49,4 +53,24 @@ func PrintBitmap(bitmap uint64) {
 		}
 		fmt.Println()
 	}
+}
+
+// had to use interface for "any" type (should be done with generics if using go1.18)
+func Ternary(condition bool, str1 interface{}, str2 interface{}) interface{} {
+	if condition {
+		return str1
+	}
+
+	return str2
+}
+
+func GetInfoMessage(score int8, elapsed time.Duration, movesMade int8) string {
+	player := Ternary(score > 0, "AI", "You")
+	fmt.Println(score)
+	winDiff := 49 - math.Abs(float64(score))
+
+	estimationMessage := Ternary(score != 0, fmt.Sprintf("%s can win in %.0f move/s", player, winDiff), "/")
+	message := fmt.Sprintf("Moves made: %d, Elapsed: %s, Estimation: %s", movesMade+1, elapsed, estimationMessage)
+	fmt.Println(message)
+	return message
 }

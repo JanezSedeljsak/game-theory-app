@@ -2,7 +2,7 @@ package tictactoe
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"sync"
 )
 
@@ -39,7 +39,7 @@ type GameStatus struct {
 func (gs *GameStatus) Stringify() string {
 	str, err := json.Marshal(gs)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return ""
 	}
 

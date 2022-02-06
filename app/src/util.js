@@ -56,8 +56,17 @@ export function getNextRow(board, col) {
 export async function evalGameStatus(coreResponse, toasts, game) {
   const parsedResponse = JSON.parse(coreResponse);
   const response = [parsedResponse.board, new Set()];
-  if (!parsedResponse.isdone) return response;
+  if (parsedResponse?.info && !parsedResponse.isdone) {
+    toasts.clearAll();
+    toasts.add({
+      title: "Game status",
+      description: parsedResponse.info,
+      type: "info",
+      duration: 10000,
+    });
+  }
 
+  if (!parsedResponse.isdone) return response;
   const [p1, p2] = getPlayerLabels(game);
   const description = !parsedResponse.winner ? "Draw" : `${parsedResponse.winner == 1 ? p1 : p2} won!`;
 

@@ -1,6 +1,6 @@
 <script>
   import { getNextRow, GMEnum, GEnum, getNextPlayer, evalGameStatus, boardAction, sleep } from "../util";
-  import { mdiHome, mdiRestart, mdiGamepad } from "@mdi/js";
+  import { mdiHome, mdiRestart, mdiGamepad, mdiArrowLeft } from "@mdi/js";
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
 
@@ -36,6 +36,12 @@
       hoverCol = -1;
     }
   }
+
+  /*async function goBack() {
+    const response = await historyAction();
+    playerMoveCount -= gameMode != GMEnum.Multiplayer ? 2 : 1;
+
+  }*/
 
   function setHover(col) {
     if (winningLine.size == 0) {
@@ -77,5 +83,6 @@
     <Button primary class="is-rounded" icon={mdiHome} on:click={() => (visible = "landing")} />
     <Button primary class="is-rounded" icon={mdiRestart} on:click={resetGame} />
     <Button primary class="is-rounded" icon={mdiGamepad} on:click={() => (showModal = true)} />
+    <Button primary class="is-rounded" icon={mdiArrowLeft} on:click={() => (showModal = true)} />
   </div>
 </div>

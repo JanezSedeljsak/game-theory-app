@@ -2,7 +2,7 @@ package connect4
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"sync"
 )
 
@@ -36,12 +36,13 @@ type GameStatus struct {
 	Winner int       `json:"winner"`
 	IsDone bool      `json:"isdone"`
 	Coords []Coord   `json:"coords"`
+	Info   string    `json:"info"`
 }
 
 func (gs *GameStatus) Stringify() string {
 	str, err := json.Marshal(gs)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 		return ""
 	}
 
