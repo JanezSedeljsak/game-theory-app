@@ -1,6 +1,6 @@
 <script>
   import { getNextRow, GMEnum, GEnum, getNextPlayer, evalGameStatus, boardAction, sleep, histroyAction } from "../util";
-  import { mdiHome, mdiRestart, mdiGamepad, mdiArrowLeft } from "@mdi/js";
+  import { mdiHome, mdiRestart, mdiGamepad, mdiArrowLeft, mdiInformationOff, mdiInformation } from "@mdi/js";
   import { Button } from "svelte-chota";
   import { toasts } from "svelte-toasts";
 
@@ -12,6 +12,7 @@
   var winningLine = new Set();
   var playerMoveCount = 0;
   var hoverCol = -1;
+  var showInformation = true
 
   // reset game on modal dispatch
   $: (() => !showModal && resetGame())();
@@ -31,7 +32,7 @@
     await sleep();
     const response = await boardAction(gameMode, cf_mutateAI, cf_mutateRand, cf_multiplayer, board, col);
     playerMoveCount += gameMode != GMEnum.Multiplayer ? 2 : 1;
-    [board, winningLine] = await evalGameStatus(response, toasts, GEnum.Connect4);
+    [board, winningLine] = await evalGameStatus(response, toasts, GEnum.Connect4, showInformation);
     if (winningLine.size > 0) {
       hoverCol = -1;
     }
@@ -86,5 +87,11 @@
     <Button primary class="is-rounded" icon={mdiRestart} on:click={resetGame} />
     <Button primary class="is-rounded" icon={mdiGamepad} on:click={() => (showModal = true)} />
     <Button primary class="is-rounded" icon={mdiArrowLeft} on:click={goBack} />
+    <Button 
+      primary 
+      class="is-rounded" 
+      icon={showInformation ? mdiInformation : mdiInformationOff} 
+      on:click={() => (showInformation = !showInformation)} 
+    />
   </div>
 </div>

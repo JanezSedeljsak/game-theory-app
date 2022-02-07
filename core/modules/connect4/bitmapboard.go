@@ -85,8 +85,7 @@ func (bb *BitmapBoard) SortedMoves(hash uint64) (int8, [7]MoveEval, int) {
 		tmpBoard.MakeMove(option)
 		winner := tmpBoard.CheckWinner()
 		if winner {
-			// forced move
-			return 2, [7]MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}, 0
+			return 2, [7]MoveEval{{Col: option, Board: tmpBoard, Winner: winner}}, 0 // forced move
 		}
 
 		moves[validCount] = MoveEval{Col: option, Board: tmpBoard, Winner: winner}

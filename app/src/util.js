@@ -53,10 +53,10 @@ export function getNextRow(board, col) {
   return freeRow;
 }
 
-export async function evalGameStatus(coreResponse, toasts, game) {
+export async function evalGameStatus(coreResponse, toasts, game, showInfo=false) {
   const parsedResponse = JSON.parse(coreResponse);
   const response = [parsedResponse.board, new Set()];
-  if (parsedResponse?.info && !parsedResponse.isdone) {
+  if (showInfo && parsedResponse?.info && !parsedResponse.isdone) {
     toasts.clearAll();
     toasts.add({
       title: "Game status",
@@ -86,6 +86,5 @@ export async function evalGameStatus(coreResponse, toasts, game) {
 
 export async function histroyAction(prevMoveFunc) {
   const parsedResponse = JSON.parse(await prevMoveFunc());
-  const response = [parsedResponse.board, new Set(), !parsedResponse.empty];
-  return response
+  return [parsedResponse.board, new Set(), !parsedResponse.empty];
 }

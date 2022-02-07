@@ -17,12 +17,12 @@ func newdp(maxDepth int8) *dp {
 
 func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winner bool) (int8, int8) {
 	if depth == dp.MaxDepth {
-		return 0, 0
+		return 0, 0 // max depth reached
 	}
 
 	hash := board.Hash()
-	if _, ok := dp.Memo[hash]; ok {
-		return 0, dp.Memo[hash]
+	if cachedValue, ok := dp.Memo[hash]; ok {
+		return 0, cachedValue // read from memo
 	}
 
 	var bestVal int8 = MinScore
@@ -31,9 +31,9 @@ func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winn
 	code, moves, size := board.SortedMoves(hash)
 	switch code {
 	case 1:
-		return 0, 0
+		return 0, 0 // board is full
 	case 2:
-		return moves[0].Col, 49 - depth
+		return moves[0].Col, 49 - depth // winning move
 	}
 
 	for index, move := range moves {
