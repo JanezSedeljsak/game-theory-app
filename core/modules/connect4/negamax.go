@@ -16,9 +16,7 @@ func newdp(maxDepth int8) *dp {
 }
 
 func (dp *dp) negaMax(board BitmapBoard, depth int8, alpha int8, beta int8, winner bool) (int8, int8) {
-	if winner {
-		return 0, depth - 50
-	} else if depth == dp.MaxDepth {
+	if depth == dp.MaxDepth {
 		return 0, 0
 	}
 
