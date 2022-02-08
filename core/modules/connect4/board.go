@@ -141,6 +141,10 @@ func (b *Board) CountMoves() int8 {
 
 func (b *Board) CheckWinner() GameStatus {
 	c := b.lastInserted
+	if c == -1 {
+		return GameStatus{Winner: 0, Coords: []Coord{}}
+	}
+
 	r := b.Cols[c].top
 
 	// Check vertical (down)
