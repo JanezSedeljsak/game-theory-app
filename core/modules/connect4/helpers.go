@@ -7,17 +7,11 @@ import (
 )
 
 func IsSymmetrical(bitmap uint64) bool {
-	for i := 1; i <= 3; i++ {
-		for j := 0; j < 7; j++ {
-			leftIdx := 21 - i*7 + j
-			rightIdx := 21 + i*7 + j
-			if ((bitmap >> leftIdx) & 1) != ((bitmap >> rightIdx) & 1) {
-				return false
-			}
-		}
-	}
+	var left uint64 = bitmap >> 28
+	var right uint64 = (bitmap << 43) >> 43
+	var reversedRight uint64 = ((right & FIRST) << 14) + (right & SECOND) + ((right & THIRD) >> 14)
 
-	return true
+	return reversedRight == left
 }
 
 func getGameStatus(board Board, message string) GameStatus {

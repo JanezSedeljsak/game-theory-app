@@ -6,6 +6,9 @@ package connect4
  */
 
 const BOTTOM uint64 = 0b_0000001_0000001_0000001_0000001_0000001_0000001_0000001
+const THIRD uint64 = 0b_1111111_0000000_0000000
+const SECOND uint64 = 0b_0000000_1111111_0000000
+const FIRST uint64 = 0b_0000000_0000000_1111111
 
 type BitmapBoard struct {
 	Pos  uint64
